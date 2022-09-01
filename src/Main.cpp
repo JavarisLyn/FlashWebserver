@@ -3,7 +3,7 @@
  * @version: 
  * @Author: justin
  * @Date: 2022-08-23 14:17:10
- * @LastEditTime: 2022-09-01 21:34:21
+ * @LastEditTime: 2022-09-01 21:53:56
  * @copyright: Copyright (c) 2022
  */
 #include<iostream>
@@ -12,6 +12,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <unistd.h> 
 using namespace std;
 
 int main(){
@@ -30,5 +31,15 @@ int main(){
         char szIPAddr[64] = {0};
         sprintf(szIPAddr, "%d.%d.%d.%d", *pch, *(pch+1), *(pch+2),*(pch+3));
         cout<<"client addr: "<<szIPAddr<<endl;
+
+        char recv_buf[512];
+        /* #include <unistd.h>  */
+        int len = read(accept_fd,recv_buf,sizeof(recv_buf));
+        cout<<recv_buf<<endl;
+
+        char send_buf[256];
+        char sendbuf[256] = "hello this is the first msg from server by leeeyf";
+        write(accept_fd,sendbuf,sizeof(sendbuf));
+ 
     }
 }

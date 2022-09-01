@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 20:55:16
- * @LastEditTime: 2022-09-01 21:26:32
+ * @LastEditTime: 2022-09-01 21:52:06
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -12,6 +12,8 @@
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <iostream>
+
 using namespace std;
 
 int main(){
@@ -24,6 +26,15 @@ int main(){
     serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");//注意，这里是服务端的ip和端口
     serv_addr.sin_port = htons(8081);
     connect(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
+
+    //发送消息
+    char sendbuf[256] = "hello this is the first msg from client by leeeyf";
+    write(sock,sendbuf,sizeof(sendbuf));
+
+    //接受消息
+    char recvbuf[256];
+    int len = read(sock,recvbuf,sizeof(recvbuf));
+    cout<<recvbuf<<endl;
 
     //头文件 unistd.h
     close(sock);
