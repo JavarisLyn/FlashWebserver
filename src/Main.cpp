@@ -3,7 +3,7 @@
  * @version: 
  * @Author: justin
  * @Date: 2022-08-23 14:17:10
- * @LastEditTime: 2022-09-01 21:53:56
+ * @LastEditTime: 2022-09-03 16:37:13
  * @copyright: Copyright (c) 2022
  */
 #include<iostream>
@@ -40,6 +40,7 @@ int main(){
         char send_buf[256];
         char sendbuf[256] = "hello this is the first msg from server by leeeyf";
         write(accept_fd,sendbuf,sizeof(sendbuf));
- 
+
+        memcpy(send_buf,send_buf,10);
     }
 }

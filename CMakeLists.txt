@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_COMPILER "g++")
 set(CXX_FLAGS -g -Wall -std=c++11 =pthread)
 
-add_executable(FlashWebserver src/Server/Utils.cpp src/Main.cpp)
+add_executable(FlashWebserver src/Server/Utils.cpp src/Server/Channel.cpp src/Main.cpp)
 #根据指定文件生成可执行文件
 #https://www.jianshu.com/p/19765d4932a4
 

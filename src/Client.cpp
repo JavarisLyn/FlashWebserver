@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 20:55:16
- * @LastEditTime: 2022-09-01 21:52:06
+ * @LastEditTime: 2022-09-01 22:18:49
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -15,6 +15,8 @@
 #include <iostream>
 
 using namespace std;
+
+/* 也可以直接用linux的nc命令 */
 
 int main(){
     int sock = socket(AF_INET,SOCK_STREAM,0);
