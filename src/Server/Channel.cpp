@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-03 15:55:03
- * @LastEditTime: 2022-09-03 16:35:15
+ * @LastEditTime: 2022-09-04 14:31:02
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -22,6 +22,18 @@ int Channel::Getfd(){
 void Channel::Setfd(int fd){
     fd_ = fd;
 }
+
+__uint32_t Channel::GetToListenEvents(){
+    return to_listen_events_;
+}
+
+void Channel::SetToListenEvents(__uint32_t new_events){
+    to_listen_events_ = new_events;
+}
+
+void Channel::SetActiveEvents(__uint32_t active_events){
+     active_events_ = active_events;
+ }
 
 void Channel::SetReadCallback(Callback read_callback){
     read_callback_ = read_callback;

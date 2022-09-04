@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 16:56:44
- * @LastEditTime: 2022-09-03 16:19:32
+ * @LastEditTime: 2022-09-04 15:23:24
  * @Description: 一个Channel负责处理一个fd,属于一个EventLoop
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -26,8 +26,11 @@ private:
     /* 所属的EventLoop */
     EventLoop* eventloop_;
 
-    /* 活跃的事件 */
+    /* 监听到的活跃的事件,是to_listen_events的子集 */
     __uint32_t active_events_;
+
+    /* 需要监听的事件 */
+    __uint32_t to_listen_events_;
 
     /* 对应事件的回调函数 */
     Callback read_callback_;
@@ -37,8 +40,9 @@ private:
     
 public:
 
+    Channel() = default;
     Channel(EventLoop* eventLoop,int fd);
-    ~Channel();
+    ~Channel() = default;
 
     int Getfd();
     void Setfd(int fd);
@@ -48,6 +52,11 @@ public:
     void SetWriteCallback(Callback write_callback);
     void SetErrorCallback(Callback error_callback);
     void SetConnCallback(Callback conn_callback);
+
+    /* 获取和更新需要监听的事件 */
+    __uint32_t GetToListenEvents();
+    void SetToListenEvents(__uint32_t new_events);
+    void SetActiveEvents(__uint32_t active_events);
 
 private:
     /* 处理监听到的事件 */
