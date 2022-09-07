@@ -2,17 +2,23 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-03 15:55:03
- * @LastEditTime: 2022-09-04 14:31:02
+ * @LastEditTime: 2022-09-05 17:21:13
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
 #include "Channel.h"
-
+#include <iostream>
+#include <unistd.h>
 
 Channel::Channel(EventLoop *eventloop,int fd)
     :eventloop_(eventloop),
-    fd_(fd)
+    fd_(fd),
+    to_listen_events_((__uint32_t)0)
 {}
+
+Channel::~Channel(){
+    // close(fd_);
+}
 
 int Channel::Getfd(){
     return fd_;
@@ -89,6 +95,7 @@ void Channel::HandleEvents(){
         HandleError();
     }
     /* handleconn todo */
+    std::cout<<"new coon"<<std::endl;
 }
 
 
