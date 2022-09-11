@@ -1,9 +1,19 @@
+/*
+ * @Version: 
+ * @Author: LiYangfan.justin
+ * @Date: 2022-09-01 19:29:58
+ * @LastEditTime: 2022-09-11 20:00:37
+ * @Description: 
+ * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
+ */
 #include "Utils.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
 #include <unistd.h>
-int SocketBindListen(int port){
+#include <iostream>
+
+int Utils::SocketBindListen(int port){
     if(port<0 || port>65535){
         return -1;
     }
@@ -11,6 +21,7 @@ int SocketBindListen(int port){
     int listen_fd = 0;
     if((listen_fd = socket(AF_INET, SOCK_STREAM,0))==-1){
         close(listen_fd);
+        std::cout<<"socket creat failed"<<std::endl;
         return -1;
     }
 
@@ -39,3 +50,4 @@ int SocketBindListen(int port){
 
     return listen_fd;
 }
+

@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-03 15:55:03
- * @LastEditTime: 2022-09-05 17:21:13
+ * @LastEditTime: 2022-09-11 20:14:34
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -89,13 +89,15 @@ void Channel::HandleEvents(){
         HandleWrite();
     }
     if(active_events_ & (EPOLLIN | EPOLLPRI | EPOLLRDHUP)){
+        std::cout<<"handle read"<<std::endl;
         HandleRead();
     }
     if(active_events_ & EPOLLERR){
         HandleError();
     }
     /* handleconn todo */
-    std::cout<<"new coon"<<std::endl;
+    HandleConn();
+    // std::cout<<"new coon"<<std::endl;
 }
 
 
