@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-05 10:17:52
- * @LastEditTime: 2022-09-07 16:51:18
+ * @LastEditTime: 2022-09-11 20:53:28
  * @Description:
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -18,7 +18,7 @@ EventLoop::EventLoop()
 
 void EventLoop::Loop(){
     while(is_looping_){
-        std::vector<UniqChannle> returned_channels;
+        std::vector<SharedChannel> returned_channels;
         returned_channels = epoller_->EpollWait();
         for(auto& it:returned_channels){
             it->HandleEvents();

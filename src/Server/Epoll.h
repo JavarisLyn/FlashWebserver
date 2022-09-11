@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 16:51:02
- * @LastEditTime: 2022-09-11 20:49:36
+ * @LastEditTime: 2022-09-11 20:52:32
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -14,17 +14,17 @@
 #include "Channel.h"
 #include <memory>
 
-typedef std::unique_ptr<Channel> UniqChannle;
+typedef std::shared_ptr<Channel> SharedChannel;
 
 class Epoll{
 
     public:
         Epoll();
         ~Epoll();
-        void EpollAdd(UniqChannle channel);
-        void EpollModify(UniqChannle channel);
-        void EpollDel(UniqChannle channel);
-        std::vector<UniqChannle> EpollWait();
+        void EpollAdd(SharedChannel channel);
+        void EpollModify(SharedChannel channel);
+        void EpollDel(SharedChannel channel);
+        std::vector<SharedChannel> EpollWait();
         /* todo 调用会多次拷贝 */
         std::vector<epoll_event> GetReturnedFdEvents(){
             return returned_fd_events_;
@@ -40,7 +40,7 @@ class Epoll{
         const int EPOLLWAIT_TIMEOUT = 10000;
         int epoll_fd_;
         // std::vector<epoll_event> returned_fd_events_;
-        std::unordered_map<int,UniqChannle> fd2channel_;
+        std::unordered_map<int,SharedChannel> fd2channel_;
 
         std::vector<epoll_event> returned_fd_events_;
 

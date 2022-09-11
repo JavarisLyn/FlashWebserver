@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 17:08:39
- * @LastEditTime: 2022-09-05 19:20:20
+ * @LastEditTime: 2022-09-11 20:52:59
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -22,7 +22,7 @@ Epoll::Epoll()
 Epoll::~Epoll(){}
 
 /* channel用哪种智能指针? */
-void Epoll::EpollAdd(UniqChannle channel){
+void Epoll::EpollAdd(SharedChannel channel){
     int fd = channel->Getfd();
     struct epoll_event event;
     event.data.fd = fd;//这个必须加
@@ -34,10 +34,10 @@ void Epoll::EpollAdd(UniqChannle channel){
         std::cout<<"epoll add success"<<std::endl;
     }
     /* how ?不加move报错 */
-    fd2channel_.insert(std::pair<int,UniqChannle>(fd,std::move(channel)));
+    fd2channel_.insert(std::pair<int,SharedChannel>(fd,channel));
 }
 
-void Epoll::EpollModify(UniqChannle channel){
+void Epoll::EpollModify(SharedChannel channel){
     int fd = channel->Getfd();
     struct epoll_event *event;
     event->events = channel->GetToListenEvents();
@@ -48,7 +48,7 @@ void Epoll::EpollModify(UniqChannle channel){
     }
 }
 
-void Epoll::EpollDel(UniqChannle channel){
+void Epoll::EpollDel(SharedChannel channel){
     int fd = channel->Getfd();
     struct epoll_event *event;
     event->events = channel->GetToListenEvents();
@@ -60,24 +60,24 @@ void Epoll::EpollDel(UniqChannle channel){
     fd2channel_.erase(fd);
 }
 
-std::vector<UniqChannle> Epoll::EpollWait(){
+std::vector<SharedChannel> Epoll::EpollWait(){
     // epoll_event events_begin = *(GetReturnedFdEvents().begin());//
     while(true){
         int fd_count = epoll_wait(epoll_fd_,&*returned_fd_events_.begin(),MAXEVENTS,EPOLLWAIT_TIMEOUT);
         if(fd_count<0){
             perror("epoll wait error");
         }
-        std::vector<UniqChannle> active_channels;
+        std::vector<SharedChannel> active_channels;
         std::cout<<"epoll wait returned"<<fd_count<<std::endl;
         for(int i=0;i<fd_count;i++){
             int fd = returned_fd_events_[i].data.fd;
             std::cout<<"fd "<<i<<":"<<fd<<std::endl;
             /* how ?需要加move */
-            UniqChannle channel = std::move(fd2channel_[fd]);
+            SharedChannel channel = (fd2channel_[fd]);
             channel->SetActiveEvents(returned_fd_events_[i].events);
             /* todo 是否需要设置待监听事件为空? */
             // channel.SetToListenEvents(0);
-            active_channels.emplace_back(std::move(channel));
+            active_channels.emplace_back((channel));
         }
         /* 拷贝问题？ */
         if(active_channels.size()>0){

@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 16:59:45
- * @LastEditTime: 2022-09-07 20:39:03
+ * @LastEditTime: 2022-09-11 20:53:36
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -23,7 +23,7 @@ class EventLoop{
         void Loop();
         void Quit();
 
-        void AddToEpoller(UniqChannle channel){
+        void AddToEpoller(SharedChannel channel){
             epoller_->EpollAdd(std::move(channel));
         }
 

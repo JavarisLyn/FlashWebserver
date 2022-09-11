@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-07 21:30:58
- * @LastEditTime: 2022-09-11 19:55:43
+ * @LastEditTime: 2022-09-11 20:54:11
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -23,7 +23,7 @@ void Server::start(){
 
     listen_fd_ = Utils::SocketBindListen(port_);
     std::cout<<"listen fd"<<listen_fd_<<std::endl;
-    UniqChannle channel(new Channel(event_loop_,listen_fd_));
+    SharedChannel channel(new Channel(event_loop_,listen_fd_));
     channel->SetConnCallback(std::bind(&Server::HandleNewConn,this));
     channel->SetReadCallback([](){
         std::cout<<"new read"<<std::endl;
@@ -44,7 +44,7 @@ void Server::HandleNewConn(){
         //建立新连接
         std::cout<<"new conn,acept fd:"<<accept_fd<<std::endl;
         EventLoop *new_loop = eventLoopThreadPool_->GetNextLoop();
-        UniqChannle channel(new Channel(new_loop,accept_fd));
+        SharedChannel channel(new Channel(new_loop,accept_fd));
         channel->SetReadCallback([](){
             std::cout<<"new read"<<std::endl;
         });
