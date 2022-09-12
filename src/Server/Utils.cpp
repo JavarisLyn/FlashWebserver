@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 19:29:58
- * @LastEditTime: 2022-09-11 20:00:37
+ * @LastEditTime: 2022-09-12 13:57:44
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -49,5 +49,10 @@ int Utils::SocketBindListen(int port){
     }
 
     return listen_fd;
+}
+
+void Utils::WriteToFd(int fd,void *buf,size_t size){
+    char* ptr = (char *)buf;
+    write(fd,ptr,size);
 }
 

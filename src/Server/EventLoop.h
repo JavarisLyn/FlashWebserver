@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 16:59:45
- * @LastEditTime: 2022-09-11 20:53:36
+ * @LastEditTime: 2022-09-12 15:50:56
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -18,7 +18,7 @@ class EventLoop{
         typedef std::function<void()> Callback; 
 
         EventLoop();
-        ~EventLoop() = default;
+        ~EventLoop();
 
         void Loop();
         void Quit();
@@ -27,8 +27,6 @@ class EventLoop{
             epoller_->EpollAdd(std::move(channel));
         }
 
-        /* &&? todo */
-        void QueueINCallback(Callback&& cb);
         bool IsInLoopthread() const;
         void RunFunction(Callback&& cb);
         
@@ -36,6 +34,10 @@ class EventLoop{
     private:
         void WakeUpTargetEventLoop();
         void DoCallbacks();
+        int CreateEventFd();
+        /* &&? todo */
+        /* 需要从RunFunction调用 */
+        void QueueINCallback(Callback&& cb);
 
     private:
         /* 控制loop启停 */
@@ -54,5 +56,10 @@ class EventLoop{
 
         /* 该eventloop所属的线程id */
         const int thread_id_;
+
+        /* 专门用于唤醒epoll的fd和channel */
+        int wakeup_fd_;
+
+        SharedChannel wakeup_channel_;
            
 };

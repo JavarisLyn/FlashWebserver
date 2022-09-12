@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-07 21:30:58
- * @LastEditTime: 2022-09-11 20:54:11
+ * @LastEditTime: 2022-09-12 15:43:57
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -10,6 +10,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <functional>
 
 Server::Server(EventLoop * event_loop, int port,int thread_num):
     port_(port),
@@ -49,6 +50,7 @@ void Server::HandleNewConn(){
             std::cout<<"new read"<<std::endl;
         });
         channel->SetToListenEvents(EPOLLIN | EPOLLET);
-        new_loop->AddToEpoller(std::move(channel));
+        new_loop->RunFunction(std::bind(&EventLoop::AddToEpoller,new_loop,channel));
+        // new_loop->AddToEpoller(std::move(channel));
     }
 }
