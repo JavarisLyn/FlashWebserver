@@ -25,6 +25,14 @@ int Utils::SocketBindListen(int port){
         return -1;
     }
 
+    //解决bug7:Address already in use
+    int flag = 1;
+	if (setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag)) < 0)
+	{
+        perror("setsockopt failed");
+		return -1;
+	}
+
     struct sockaddr_in sever_addr;
     bzero((char *)&sever_addr,sizeof(sever_addr));
     sever_addr.sin_family = AF_INET;
