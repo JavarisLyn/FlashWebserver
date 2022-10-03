@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-07 21:30:58
- * @LastEditTime: 2022-10-03 15:42:49
+ * @LastEditTime: 2022-10-03 15:48:28
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -69,10 +69,7 @@ void Server::HandleNewConn(){
         EventLoop *new_loop = eventLoopThreadPool_->GetNextLoop();
         std::shared_ptr<Http> new_http(new Http(new_loop,accept_fd));
 
-        new_http->GetChannel()->SetHolder(new_http);
-        new_http->GetChannel()->SetToListenEvents(EPOLLIN | EPOLLET);
-        new_http->GetLoop()->AddToEpoller(new_http->GetChannel());
-        //new_loop->RunFunction(std::bind(&Http::Init,new_http));
+        new_loop->RunFunction(std::bind(&Http::Init,new_http));
 
         // SharedChannel channel(new Channel(new_loop,accept_fd));
         // channel->SetReadCallback([channel](){
