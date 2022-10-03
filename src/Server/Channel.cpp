@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-03 15:55:03
- * @LastEditTime: 2022-09-11 20:14:34
+ * @LastEditTime: 2022-10-03 12:59:19
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -14,10 +14,14 @@ Channel::Channel(EventLoop *eventloop,int fd)
     :eventloop_(eventloop),
     fd_(fd),
     to_listen_events_((__uint32_t)0)
-{}
+{
+    LOG_TRACE("Channel construct,fd:%d\n",fd_);
+}
 
 Channel::~Channel(){
     // close(fd_);
+    LOG_TRACE("Channel deconstruct,fd:%d\n",fd_);
+    std::cout<<"Chanel deconstrcut"<<std::endl;
 }
 
 int Channel::Getfd(){
@@ -38,8 +42,8 @@ void Channel::SetToListenEvents(__uint32_t new_events){
 }
 
 void Channel::SetActiveEvents(__uint32_t active_events){
-     active_events_ = active_events;
- }
+    active_events_ = active_events;
+}
 
 void Channel::SetReadCallback(Callback read_callback){
     read_callback_ = read_callback;

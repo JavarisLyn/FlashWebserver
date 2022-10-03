@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 17:08:39
- * @LastEditTime: 2022-09-11 20:52:59
+ * @LastEditTime: 2022-10-03 15:10:31
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -35,6 +35,8 @@ void Epoll::EpollAdd(SharedChannel channel){
     }
     /* how ?不加move报错 */
     fd2channel_.insert(std::pair<int,SharedChannel>(fd,channel));
+    fd2http_.insert(std::pair<int,std::shared_ptr<Http>>(fd,channel->GetHolder()));
+    LOG_TRACE("fd2channel_ isnerrt,fd:%d",fd);
 }
 
 void Epoll::EpollModify(SharedChannel channel){
@@ -53,11 +55,16 @@ void Epoll::EpollDel(SharedChannel channel){
     struct epoll_event *event;
     event->events = channel->GetToListenEvents();
     if(epoll_ctl(epoll_fd_,EPOLL_CTL_DEL,fd,event)<0){
+        LOG_TRACE("epoll ctl delete error%d\n",fd);
         perror("epoll ctl delete error");
     }else{
+        LOG_TRACE("epoll ctl delete success%d\n",fd);
         std::cout<<"epoll ctl delete success"<<std::endl;
     }
-    fd2channel_.erase(fd);
+    size_t n = fd2channel_.erase(fd);
+    (void)n;
+    assert(n == 1);
+    fd2http_.erase(fd);
 }
 
 std::vector<SharedChannel> Epoll::EpollWait(){
@@ -74,6 +81,14 @@ std::vector<SharedChannel> Epoll::EpollWait(){
             std::cout<<"fd "<<i<<":"<<fd<<std::endl;
             /* how ?需要加move */
             SharedChannel channel = (fd2channel_[fd]);
+            if(channel == nullptr){
+                std::string channelFds = "";
+                for(auto& t:fd2channel_){
+                    channelFds += std::to_string(t.first);
+                }
+                LOG_TRACE("channel nullptr:%s,map:%d\n",channelFds,fd);
+                continue;
+            }
             channel->SetActiveEvents(returned_fd_events_[i].events);
             /* todo 是否需要设置待监听事件为空? */
             // channel.SetToListenEvents(0);

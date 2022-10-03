@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 16:51:02
- * @LastEditTime: 2022-09-12 10:43:22
+ * @LastEditTime: 2022-09-30 14:24:51
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -12,9 +12,11 @@
 #include <sys/epoll.h>
 #include <iostream>
 #include "Channel.h"
-#include <memory>
+
+class Http;
 
 typedef std::shared_ptr<Channel> SharedChannel;
+typedef std::shared_ptr<Http> SharedHttp;
 
 class Epoll{
 
@@ -41,6 +43,7 @@ class Epoll{
         int epoll_fd_;
         // std::vector<epoll_event> returned_fd_events_;
         std::unordered_map<int,SharedChannel> fd2channel_;
+        std::unordered_map<int,SharedHttp> fd2http_;
 
         std::vector<epoll_event> returned_fd_events_;
 

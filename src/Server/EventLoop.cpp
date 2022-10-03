@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-05 10:17:52
- * @LastEditTime: 2022-09-12 15:50:49
+ * @LastEditTime: 2022-09-30 10:31:40
  * @Description:
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -27,6 +27,7 @@ EventLoop::EventLoop()
 
 EventLoop:: ~EventLoop(){
     close(wakeup_fd_);
+    std::cout<<"Eventloop deconstruct"<<std::endl;
 }
 
 void EventLoop::Loop(){
@@ -59,11 +60,11 @@ void EventLoop::DoCallbacks(){
     running_callbacks_ = false;
 }
 
-void EventLoop::RunFunction(Callback&& cb){
+void EventLoop::RunFunction(Callback cb){
     if(IsInLoopthread()){
         cb();
     }else{
-        QueueINCallback(std::move(cb));
+        QueueINCallback(cb);
     }
 }
 
@@ -71,7 +72,7 @@ bool EventLoop::IsInLoopthread() const{
     return thread_id_ == gettid();
 }
 
-void EventLoop::QueueINCallback(Callback&& cb){
+void EventLoop::QueueINCallback(Callback cb){
     /* RAII */
     {
         std::unique_lock<std::mutex> lck(callback_list_mutex_);

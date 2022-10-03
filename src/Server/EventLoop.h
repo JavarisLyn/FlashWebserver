@@ -2,14 +2,14 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 16:59:45
- * @LastEditTime: 2022-09-12 15:50:56
+ * @LastEditTime: 2022-09-30 17:44:51
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
 #pragma once
 #include <memory>
 #include "Epoll.h"
-#include "Channel.h"
+// #include "Channel.h"
 #include <mutex>
 
 class EventLoop{
@@ -28,7 +28,11 @@ class EventLoop{
         }
 
         bool IsInLoopthread() const;
-        void RunFunction(Callback&& cb);
+        void RunFunction(Callback cb);
+
+        void RemoveFromEpoller(SharedChannel channel){
+            epoller_->EpollDel(channel);
+        }
         
 
     private:
@@ -37,7 +41,7 @@ class EventLoop{
         int CreateEventFd();
         /* &&? todo */
         /* 需要从RunFunction调用 */
-        void QueueINCallback(Callback&& cb);
+        void QueueINCallback(Callback cb);
 
     private:
         /* 控制loop启停 */

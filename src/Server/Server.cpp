@@ -63,13 +63,27 @@ void Server::HandleNewConn(){
     while((accept_fd = accept(listen_fd_,(struct sockaddr *)&client_addr,&client_addr_len))>0){
         //建立新连接
         std::cout<<"new conn,acept fd:"<<accept_fd<<std::endl;
+        if(Utils::setSocketNonBlocking(accept_fd)<0){
+            std::cout<<"set socket non block failed"<<std::endl;
+        }
         EventLoop *new_loop = eventLoopThreadPool_->GetNextLoop();
-        SharedChannel channel(new Channel(new_loop,accept_fd));
-        channel->SetReadCallback([](){
-            std::cout<<"new read"<<std::endl;
-        });
-        channel->SetToListenEvents(EPOLLIN | EPOLLET);
-        new_loop->RunFunction(std::bind(&EventLoop::AddToEpoller,new_loop,channel));
+        std::shared_ptr<Http> new_http(new Http(new_loop,accept_fd));
+
+        new_http->GetChannel()->SetHolder(new_http);
+        new_http->GetChannel()->SetToListenEvents(EPOLLIN | EPOLLET);
+        new_http->GetLoop()->AddToEpoller(new_http->GetChannel());
+        //new_loop->RunFunction(std::bind(&Http::Init,new_http));
+
+        // SharedChannel channel(new Channel(new_loop,accept_fd));
+        // channel->SetReadCallback([channel](){
+        //     char buf[1024];
+        //     ssize_t len = read(channel->Getfd(),buf,1024);
+        //     std::cout<<"new read:"<<buf<<std::endl;
+        //     char* sendbuf = "1234\0";
+        //     write(channel->Getfd(),sendbuf,strlen(sendbuf));
+        // });
+        // channel->SetToListenEvents(EPOLLIN | EPOLLET);
+        // new_loop->RunFunction(std::bind(&EventLoop::AddToEpoller,new_loop,channel));
         // new_loop->AddToEpoller(std::move(channel));
     }
 }
