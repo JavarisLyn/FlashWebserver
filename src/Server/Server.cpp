@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-07 21:30:58
- * @LastEditTime: 2022-09-12 15:43:57
+ * @LastEditTime: 2022-10-03 15:42:49
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -11,6 +11,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <functional>
+#include <cstdio>
 
 Server::Server(EventLoop * event_loop, int port,int thread_num):
     port_(port),
@@ -19,7 +20,25 @@ Server::Server(EventLoop * event_loop, int port,int thread_num):
     eventLoopThreadPool_(new EventLoopThreadPool(5))  
 {}
 
+std::unique_ptr<FlashLogger::AsynLogger> asynLogger;
+
+void output(const char* data, size_t len){
+    asynLogger->append(data,len);
+}
+
+
 void Server::start(){
+    FlashLogger::LogConfig logConfig;
+    logConfig.flushInterval = 10;
+    logConfig.initBufferNodeListSize = 3;
+    logConfig.rollFileSize = 256 * 1024 * 1024;
+    FlashLogger::Logger::setConfig(logConfig);
+ 
+    FlashLogger::Logger::setOutPutFunc(output);
+    asynLogger = std::unique_ptr<FlashLogger::AsynLogger>(new FlashLogger::AsynLogger());
+    asynLogger->start();
+    LOG_TRACE("server start","123");
+    
     eventLoopThreadPool_->start();
 
     listen_fd_ = Utils::SocketBindListen(port_);
