@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 19:29:58
- * @LastEditTime: 2022-10-03 13:02:53
+ * @LastEditTime: 2022-10-04 22:04:23
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -24,7 +24,7 @@ int Utils::SocketBindListen(int port){
     int listen_fd = 0;
     if((listen_fd = socket(AF_INET, SOCK_STREAM,0))==-1){
         close(listen_fd);
-        std::cout<<"socket creat failed"<<std::endl;
+        // std::cout<<"socket creat failed"<<std::endl;
         return -1;
     }
 
@@ -65,12 +65,36 @@ int Utils::SocketBindListen(int port){
     return listen_fd;
 }
 
-void Utils::WriteToFd(int fd,void *buf,size_t size){
-    char* ptr = (char *)buf;
-    write(fd,ptr,size);
+ssize_t Utils::WriteToFd(int fd,void *buff,size_t n){
+    // char* ptr = (char *)buf;
+    // write(fd,ptr,size);
+    size_t nleft = n;
+    ssize_t nwritten = 0;
+    ssize_t writeSum = 0;
+    char *ptr = (char *)buff;
+    while (nleft > 0) {
+        if ((nwritten = write(fd, ptr, nleft)) <= 0) {
+        if (nwritten < 0) {
+            if (errno == EINTR) {
+            nwritten = 0;
+            continue;
+            } else if (errno == EAGAIN) {
+            return writeSum;
+            } else
+            return -1;
+        }
+        }
+        writeSum += nwritten;
+        nleft -= nwritten;
+        ptr += nwritten;
+    }
+    return writeSum;
 }
 
-ssize_t  Utils::ReadFromFd(int fd,std::string& in_buffer){
+ssize_t  Utils::ReadFromFd(int fd,std::string& in_buffer,bool& zero){
+    //正常情况下,缓冲区的数据量可能大于bufsize,所以可能需要多次read
+    //read完之后就会返回EAGAIN,此函数退出,zero = false,连接继续保持
+    //某次read读到0说明有epollin但是没有数据,如果之前有读到数据,处理完成后关闭,如果根本没读到,直接关闭
     char buf[MAX_BUF_SIZE];
     ssize_t  read_size = 0;
     ssize_t  per_read_size = 0;
@@ -89,6 +113,7 @@ ssize_t  Utils::ReadFromFd(int fd,std::string& in_buffer){
                 return -1;
             }
         }else if(per_read_size==0){
+            zero = true;
             break;
         }else{
             read_size += per_read_size;

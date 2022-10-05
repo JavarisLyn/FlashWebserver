@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-07 21:30:58
- * @LastEditTime: 2022-10-03 15:48:28
+ * @LastEditTime: 2022-10-03 20:51:51
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -17,7 +17,7 @@ Server::Server(EventLoop * event_loop, int port,int thread_num):
     port_(port),
     thread_num_(thread_num),
     event_loop_(event_loop),
-    eventLoopThreadPool_(new EventLoopThreadPool(5))  
+    eventLoopThreadPool_(new EventLoopThreadPool(thread_num))  
 {}
 
 std::unique_ptr<FlashLogger::AsynLogger> asynLogger;
@@ -42,11 +42,11 @@ void Server::start(){
     eventLoopThreadPool_->start();
 
     listen_fd_ = Utils::SocketBindListen(port_);
-    std::cout<<"listen fd"<<listen_fd_<<std::endl;
+    // std::cout<<"listen fd"<<listen_fd_<<std::endl;
     SharedChannel channel(new Channel(event_loop_,listen_fd_));
     channel->SetConnCallback(std::bind(&Server::HandleNewConn,this));
     channel->SetReadCallback([](){
-        std::cout<<"new read"<<std::endl;
+        // std::cout<<"new read"<<std::endl;
     });
     channel->SetToListenEvents(EPOLLIN | EPOLLET);
     
@@ -62,9 +62,9 @@ void Server::HandleNewConn(){
     int accept_fd = 0;
     while((accept_fd = accept(listen_fd_,(struct sockaddr *)&client_addr,&client_addr_len))>0){
         //建立新连接
-        std::cout<<"new conn,acept fd:"<<accept_fd<<std::endl;
+        // std::cout<<"new conn,acept fd:"<<accept_fd<<std::endl;
         if(Utils::setSocketNonBlocking(accept_fd)<0){
-            std::cout<<"set socket non block failed"<<std::endl;
+            // std::cout<<"set socket non block failed"<<std::endl;
         }
         EventLoop *new_loop = eventLoopThreadPool_->GetNextLoop();
         std::shared_ptr<Http> new_http(new Http(new_loop,accept_fd));

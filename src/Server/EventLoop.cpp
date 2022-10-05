@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-05 10:17:52
- * @LastEditTime: 2022-09-30 10:31:40
+ * @LastEditTime: 2022-10-03 20:48:43
  * @Description:
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -27,7 +27,7 @@ EventLoop::EventLoop()
 
 EventLoop:: ~EventLoop(){
     close(wakeup_fd_);
-    std::cout<<"Eventloop deconstruct"<<std::endl;
+    // std::cout<<"Eventloop deconstruct"<<std::endl;
 }
 
 void EventLoop::Loop(){
@@ -43,7 +43,7 @@ void EventLoop::Loop(){
 }
 
 void EventLoop::DoCallbacks(){
-    std::cout<<"start doing callbacks"<<std::endl;
+    // std::cout<<"start doing callbacks"<<std::endl;
     running_callbacks_ = true;
     /* 拷贝后执行，减少对callback_list_mutex的锁持有时间 */
     std::vector<Callback> to_copy_list;
@@ -99,7 +99,7 @@ int EventLoop::CreateEventFd(){
 void EventLoop::WakeUpTargetEventLoop(){
     uint64_t data = 1;
     Utils::WriteToFd(wakeup_fd_,&data,sizeof data);
-    std::cout<<"wake up fd"<<std::endl;
+    // std::cout<<"wake up fd"<<std::endl;
 }
 
 void EventLoop::Quit(){

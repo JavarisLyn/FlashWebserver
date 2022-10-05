@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 17:08:39
- * @LastEditTime: 2022-10-03 15:10:31
+ * @LastEditTime: 2022-10-05 00:19:35
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -26,12 +26,12 @@ void Epoll::EpollAdd(SharedChannel channel){
     int fd = channel->Getfd();
     struct epoll_event event;
     event.data.fd = fd;//这个必须加
-    std::cout<<"add fd"<<fd<<std::endl;
+    // std::cout<<"add fd"<<fd<<std::endl;
     event.events = channel->GetToListenEvents();
     if(epoll_ctl(epoll_fd_,EPOLL_CTL_ADD,fd,&event)<0){
         perror("epoll ctl error");
     }else{
-        std::cout<<"epoll add success"<<std::endl;
+        // std::cout<<"epoll add success"<<std::endl;
     }
     /* how ?不加move报错 */
     fd2channel_.insert(std::pair<int,SharedChannel>(fd,channel));
@@ -46,7 +46,7 @@ void Epoll::EpollModify(SharedChannel channel){
     if(epoll_ctl(epoll_fd_,EPOLL_CTL_MOD,fd,event)<0){
         perror("epoll ctl modify error");
     }else{
-        std::cout<<"epoll ctl modify success"<<std::endl;
+        // std::cout<<"epoll ctl modify success"<<std::endl;
     }
 }
 
@@ -59,7 +59,7 @@ void Epoll::EpollDel(SharedChannel channel){
         perror("epoll ctl delete error");
     }else{
         LOG_TRACE("epoll ctl delete success%d\n",fd);
-        std::cout<<"epoll ctl delete success"<<std::endl;
+        // std::cout<<"epoll ctl delete success"<<std::endl;
     }
     size_t n = fd2channel_.erase(fd);
     (void)n;
@@ -75,10 +75,10 @@ std::vector<SharedChannel> Epoll::EpollWait(){
             perror("epoll wait error");
         }
         std::vector<SharedChannel> active_channels;
-        std::cout<<"epoll wait returned"<<fd_count<<std::endl;
+        // std::cout<<"epoll wait returned"<<fd_count<<std::endl;
         for(int i=0;i<fd_count;i++){
             int fd = returned_fd_events_[i].data.fd;
-            std::cout<<"fd "<<i<<":"<<fd<<std::endl;
+            // std::cout<<"fd "<<i<<":"<<fd<<std::endl;
             /* how ?需要加move */
             SharedChannel channel = (fd2channel_[fd]);
             if(channel == nullptr){
@@ -91,7 +91,8 @@ std::vector<SharedChannel> Epoll::EpollWait(){
             }
             channel->SetActiveEvents(returned_fd_events_[i].events);
             /* todo 是否需要设置待监听事件为空? */
-            // channel.SetToListenEvents(0);
+            /* 需要,每次返回后应该手动更新感兴趣的事件 */
+            channel->SetToListenEvents(0);
             active_channels.emplace_back((channel));
         }
         /* 拷贝问题？ */

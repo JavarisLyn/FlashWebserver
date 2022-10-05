@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-03 15:55:03
- * @LastEditTime: 2022-10-03 12:59:19
+ * @LastEditTime: 2022-10-03 20:48:06
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -21,7 +21,7 @@ Channel::Channel(EventLoop *eventloop,int fd)
 Channel::~Channel(){
     // close(fd_);
     LOG_TRACE("Channel deconstruct,fd:%d\n",fd_);
-    std::cout<<"Chanel deconstrcut"<<std::endl;
+    // std::cout<<"Chanel deconstrcut"<<std::endl;
 }
 
 int Channel::Getfd(){
@@ -93,7 +93,7 @@ void Channel::HandleEvents(){
         HandleWrite();
     }
     if(active_events_ & (EPOLLIN | EPOLLPRI | EPOLLRDHUP)){
-        std::cout<<"handle read"<<std::endl;
+        // std::cout<<"handle read"<<std::endl;
         HandleRead();
     }
     if(active_events_ & EPOLLERR){
