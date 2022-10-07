@@ -11,7 +11,7 @@ set(CXX_FLAGS -g -Wall -std=c++11 -pthread)
 find_package(Threads REQUIRED)
 INCLUDE_DIRECTORIES(/usr/include/lyf)
 
-add_executable(FlashWebserver src/Utils/Timer.cpp src/Server/Utils.cpp src/Server/Epoll.cpp src/Server/Channel.cpp src/Server/EventLoop.cpp src/Server/EventLoopThread.cpp src/Server/EventLoopThreadPool.cpp src/Server/Server.cpp src/Server/Http.cpp src/Main.cpp)
+add_executable(FlashWebserver src/Utils/Timer.cpp src/Utils/Utils.cpp src/Server/Epoll.cpp src/Server/Channel.cpp src/Server/EventLoop.cpp src/Server/EventLoopThread.cpp src/Server/EventLoopThreadPool.cpp src/Server/Server.cpp src/Server/Http.cpp src/Main.cpp)
 #根据指定文件生成可执行文件
 #https://www.jianshu.com/p/19765d4932a4
 
