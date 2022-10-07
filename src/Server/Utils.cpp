@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 19:29:58
- * @LastEditTime: 2022-10-04 22:04:23
+ * @LastEditTime: 2022-10-06 21:14:04
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -158,4 +158,12 @@ int Utils::setSocketNonBlocking(int fd) {
   flag |= O_NONBLOCK;
   if (fcntl(fd, F_SETFL, flag) == -1) return -1;
   return 0;
+}
+
+void Utils::SetKeepAlive(int sockfd_,bool on)
+{
+  int optval = on ? 1 : 0;
+  ::setsockopt(sockfd_, SOL_SOCKET, SO_KEEPALIVE,
+               &optval, static_cast<socklen_t>(sizeof optval));
+  // FIXME CHECK
 }

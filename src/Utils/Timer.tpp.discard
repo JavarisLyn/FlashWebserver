@@ -1,0 +1,78 @@
+/*
+ * @Version: 
+ * @Author: LiYangfan.justin
+ * @Date: 2022-10-06 10:08:50
+ * @LastEditTime: 2022-10-06 13:28:38
+ * @Description: 
+ * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
+ */
+#include "Timer.h"
+#include <sys/time.h>
+//define a member functino out of class should start with `template`
+template <typename T>
+TimerNode<T>::TimerNode(std::shared_ptr<T> data, int timeout):
+    data_(data),
+    is_deleted_(false){
+        struct timeval now;
+        gettimeofday(&now,nullptr);
+        expire_time_ = (now.tv_sec % 1000) * 1000 + (now.tv_usec / 1000) + timeout;
+    }
+
+template <typename T>
+TimerNode<T>::~TimerNode(){
+    /* 
+        if update time,then data_ is nullptr,which means handleClose won't be called.
+        if expired,data_ is not null,handleClose will be called.
+     */
+    if(data_){
+        //then http object will call deconstruct
+       data_->handleClose();
+    }
+}
+
+template <typename T>
+void TimerNode<T>::Update(int timeout){
+    struct timeval now;
+    gettimeofday(&now,nullptr);
+    expire_time_ = (now.tv_sec % 1000) * 1000 + (now.tv_usec / 1000) + timeout;
+}
+
+template <typename T>
+bool TimerNode<T>::IsExpired(){
+    struct timeval now;
+    gettimeofday(&now, nullptr);
+    size_t nowms = (((now.tv_sec % 10000) * 1000) + (now.tv_usec / 1000));
+    if(nowms < expire_time_){
+        return true;
+    }else{
+        SetDeleted();
+        return false;
+    }
+}
+
+template <typename T>
+void TimerNode<T>::ClearNode(){
+    //this shared_ptr won't point to it's data any more
+    data_.reset();
+    SetDeleted();
+}
+
+template <typename T>
+void TimerManager<T>::AddTimerNode(std::shared_ptr<T> data,int timeout){
+    std::shared_ptr<TimerNode<T>> timer_node(new TimerNode<T>(data,timeout));
+    timer_node_queue_.push(timer_node);
+    data->LinkTimer(timer_node);
+}
+
+template <typename T>
+void TimerManager<T>::HandleExpire(){
+   while(!timer_node_queue_.empty()){
+       std::shared_ptr<TimerNode<T>> timer_node = timer_node_queue_.top();
+       if(timer_node->IsExpired() || timer_node->IsDeleted()){
+           timer_node_queue_.pop();
+       }else{
+           break;
+       }
+   }
+}
+

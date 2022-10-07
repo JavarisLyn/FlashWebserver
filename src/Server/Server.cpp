@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-07 21:30:58
- * @LastEditTime: 2022-10-03 20:51:51
+ * @LastEditTime: 2022-10-07 12:39:37
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -42,6 +42,7 @@ void Server::start(){
     eventLoopThreadPool_->start();
 
     listen_fd_ = Utils::SocketBindListen(port_);
+    Utils::SetKeepAlive(listen_fd_,true);
     // std::cout<<"listen fd"<<listen_fd_<<std::endl;
     SharedChannel channel(new Channel(event_loop_,listen_fd_));
     channel->SetConnCallback(std::bind(&Server::HandleNewConn,this));
@@ -50,7 +51,7 @@ void Server::start(){
     });
     channel->SetToListenEvents(EPOLLIN | EPOLLET);
     
-    event_loop_->AddToEpoller(std::move(channel));
+    event_loop_->AddToEpoller(std::move(channel),0);//won't added into timer_manager
     event_loop_->Loop();
 }
 
@@ -62,12 +63,12 @@ void Server::HandleNewConn(){
     int accept_fd = 0;
     while((accept_fd = accept(listen_fd_,(struct sockaddr *)&client_addr,&client_addr_len))>0){
         //建立新连接
-        // std::cout<<"new conn,acept fd:"<<accept_fd<<std::endl;
+        //std::cout<<"新连接,acept fd:"<<accept_fd<<std::endl;
         if(Utils::setSocketNonBlocking(accept_fd)<0){
             // std::cout<<"set socket non block failed"<<std::endl;
         }
         EventLoop *new_loop = eventLoopThreadPool_->GetNextLoop();
-        std::shared_ptr<Http> new_http(new Http(new_loop,accept_fd));
+        std::shared_ptr<Http> new_http(new Http(new_loop,accept_fd,false));
 
         new_loop->RunFunction(std::bind(&Http::Init,new_http));
 

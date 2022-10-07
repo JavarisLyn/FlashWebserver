@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 16:59:45
- * @LastEditTime: 2022-09-30 17:44:51
+ * @LastEditTime: 2022-10-07 12:33:43
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -23,8 +23,13 @@ class EventLoop{
         void Loop();
         void Quit();
 
-        void AddToEpoller(SharedChannel channel){
-            epoller_->EpollAdd(std::move(channel));
+        void AddToEpoller(SharedChannel channel,int timeout){
+            epoller_->EpollAdd(std::move(channel),timeout);
+        }
+
+        void UpdateEpoller(SharedChannel channel,int timeout){
+            epoller_->EpollModify(channel,timeout);
+            //std::cout<<"UpdateEpoller out"<<std::endl;
         }
 
         bool IsInLoopthread() const;

@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 19:30:10
- * @LastEditTime: 2022-10-04 21:01:17
+ * @LastEditTime: 2022-10-06 21:14:34
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -17,6 +17,7 @@ namespace Utils{
     ssize_t ReadFromFd(int fd,std::string& in_buffer,bool& zero);
     ssize_t WriteToFd(int fd,std::string& out_buffer);
     int setSocketNonBlocking(int fd);
+    void SetKeepAlive(int sockfd_,bool on);
 }
 
 

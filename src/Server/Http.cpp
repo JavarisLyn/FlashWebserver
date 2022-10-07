@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-20 14:34:54
- * @LastEditTime: 2022-10-05 15:00:04
+ * @LastEditTime: 2022-10-07 12:33:47
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -10,13 +10,16 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/mman.h>
+#include "EventLoop.h"
 
+const int DEFAULT_EXPIRE_TIME = 3 * 1000;//3s expire time if keep-alive = flase
 const int DEFAULT_KEEP_ALIVE_TIME = 60 * 1000;
+
 
 //资源类型
 std::unordered_map<std::string,std::string> resource_type_map_;
 pthread_once_t once_control = PTHREAD_ONCE_INIT;
-Http::Http(EventLoop* eventloop,int fd):
+Http::Http(EventLoop* eventloop,int fd,bool keep_alive):
     eventloop_(eventloop),
     fd_(fd),
     channel_(new Channel(eventloop,fd)),
@@ -25,18 +28,18 @@ Http::Http(EventLoop* eventloop,int fd):
     process_state_(STATE_PARSE_URI),
     connectionState_(CONNECTED),
     has_error_(false),
-    keep_alive_(false){
+    keep_alive_(keep_alive){
         channel_->SetReadCallback(std::bind(&Http::HandleRead,this));
         channel_->SetWriteCallback(std::bind(&Http::HandleWrite,this));
         channel_->SetConnCallback(std::bind(&Http::HandleCurrentConn,this));
-        // std::cout<<"http created"<<std::endl;
+        //std::cout<<"http created"<<std::endl;
         LOG_TRACE("http construct,fd:%d\n",fd_);
     }
 
 Http::~Http(){
     close(fd_);
     LOG_TRACE("http deconstruct,fd:%d\n",fd_);
-    // std::cout<<"http deconstruct"<<std::endl;
+    //std::cout<<"http deconstruct,connection closed"<<std::endl;
 }
 
 void Http::InitResourceMap(){
@@ -69,6 +72,7 @@ std::string Http::GetResourceType(const std::string& suffix){
 }
 
 void Http::HandleRead(){
+    //<<"handle http read"<<std::endl;
     /* 这里采用追加写inbuffer的方式,一次请求的数据可能需要多次写入才能完成 */
     __uint32_t events = channel_->GetToListenEvents();
     do{
@@ -78,12 +82,13 @@ void Http::HandleRead(){
         read_buffer_.clear();
         break;
       }
+      //std::cout<<"readsize"<<read_size<<"zero"<<zero<<std::endl;
       if(read_size<0){
         has_error_ = true;
         perror("read buffer size < 0");
         HandleError(fd_,400,"Bad Request");
         break;
-      }else if(zero == 0){
+      }else if(zero == true){
         //没有读到数据,两个原因
         //1.对端已经关闭了连接，这时再写该fd会出错(received signal SIGPIPE, Broken pipe)，此时应该关闭连接
         //2.对端只是shutdown()了写端，告诉server我已经写完了，但是还可以接收信息。server应该在写完所有的信息后再关闭连接。
@@ -164,7 +169,7 @@ void Http::HandleRead(){
     }else{
       // HandleError(fd_,400,"Bad Request");
       HandleClose();
-      std::cout<<"handle close"<<std::endl;
+      //std::cout<<"handle close"<<std::endl;
     }
 
 
@@ -174,15 +179,36 @@ void Http::HandleRead(){
 }
 
 void Http::HandleCurrentConn(){
+  //std::cout<<"handle currentConn"<<std::endl;
+  seperateTimer();
   __uint32_t events = channel_->GetToListenEvents();
   if(!has_error_ && connectionState_ == CONNECTED){
     if(events != 0){
-
+      if ((events & EPOLLIN) && (events & EPOLLOUT)) {
+        events = __uint32_t(0);
+        events |= EPOLLOUT;
+      }
+      events |= EPOLLET;
+      channel_->SetToListenEvents(EPOLLOUT | EPOLLET);
+      if(keep_alive_){
+        //std::cout<<"1"<<std::endl;
+        eventloop_->UpdateEpoller(channel_,DEFAULT_KEEP_ALIVE_TIME);
+      }else{
+        //std::cout<<"2"<<std::endl;
+        eventloop_->UpdateEpoller(channel_,DEFAULT_EXPIRE_TIME);
+      }
     }else{
       if(keep_alive_){
+        //std::cout<<"3"<<std::endl;
         events |= (EPOLLIN | EPOLLET);
-        channel_->SetToListenEvents(EPOLLOUT | EPOLLET);
+        channel_->SetToListenEvents(events);
+        eventloop_->UpdateEpoller(channel_,DEFAULT_KEEP_ALIVE_TIME);
       }else{
+        //<<"4"<<std::endl;
+        // events |= (EPOLLIN | EPOLLET);
+        // channel_->SetToListenEvents(events);
+        // eventloop_->UpdateEpoller(channel_,DEFAULT_EXPIRE_TIME);
+        //veents = 0 means no more IO needed,close directly if short conn
         HandleClose();
       }
     }
@@ -455,6 +481,7 @@ void Http::HandleError(int fd, int err_code, std::string err_msg){
 }
 
 void Http::HandleWrite(){
+  //std::cout<<"handle http write"<<std::endl;
     //write_buffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\nHello World";
     if(!has_error_ && connectionState_ != DISCONNECTED){
       __uint32_t events = channel_->GetToListenEvents();
@@ -469,14 +496,26 @@ void Http::HandleWrite(){
     }
 }
 
+//TODO
+void Http::seperateTimer(){
+  //std::cout<<"seperate timer"<<std::endl;
+  if(timer_.lock()){
+    std::shared_ptr<TimerNode> share_timer(timer_);
+    share_timer->ClearNode();//then deconstruct won't call handleClose.
+    timer_.reset();
+  }
+}
+
 void Http::reset(){
   file_path_.clear();
   process_state_ = STATE_PARSE_URI;
   header_line_state = H_START;
   header_kv_.clear();
+  seperateTimer();
 }
 
 void Http::HandleClose(){
+  //std::cout<<"handle close"<<std::endl;
   connectionState_ = DISCONNECTED;
   eventloop_->RemoveFromEpoller(channel_);
   // std::cout<<"handle close finished"<<std::endl;
@@ -485,6 +524,6 @@ void Http::HandleClose(){
 void Http::Init(){
     channel_->SetHolder(shared_from_this());
     channel_->SetToListenEvents(EPOLLIN | EPOLLET);
-    eventloop_->AddToEpoller(channel_);
+    eventloop_->AddToEpoller(channel_,DEFAULT_EXPIRE_TIME);
 
 }

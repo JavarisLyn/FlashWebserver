@@ -2,14 +2,18 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-20 14:34:41
- * @LastEditTime: 2022-10-05 15:00:27
+ * @LastEditTime: 2022-10-07 12:31:07
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
 #pragma once
-#include "EventLoop.h"
+// #include "EventLoop.h"
 #include "Channel.h"
 #include "Utils.h"
+#include "../Utils/Timer.h"
+#include <unordered_map>
+class EventLoop;
+class TimerNode;
 
 enum HttpVersion{
     HTTP_10 = 1,
@@ -74,7 +78,7 @@ enum HttpMethod{
 
 class Http : public std::enable_shared_from_this<Http>{
     public:
-        Http(EventLoop* eventloop,int fd);
+        Http(EventLoop* eventloop,int fd,bool keep_alive);
         ~Http();
 
     private:
@@ -108,12 +112,14 @@ class Http : public std::enable_shared_from_this<Http>{
 
         // static pthread_once_t once_control;
 
+        //timer
+        std::weak_ptr<TimerNode> timer_;
+
     private:
         void HandleRead();
         void HandleWrite();
         void HandleError();
         void HandleCurrentConn();
-        void HandleClose();
         ParseURIState ParseURI();
         ParseHeaderState ParseHeaders();
         ProcessRequestState ProcessRequest();
@@ -121,8 +127,11 @@ class Http : public std::enable_shared_from_this<Http>{
         void reset();
         static void InitResourceMap();
         std::string GetResourceType(const std::string& suffix);
+        void seperateTimer();
     public:
-        SharedChannel GetChannel(){
+        void HandleClose();
+
+        std::shared_ptr<Channel> GetChannel(){
             return channel_;
         }
 
@@ -131,6 +140,10 @@ class Http : public std::enable_shared_from_this<Http>{
         }
 
         void Init();
+
+        void LinkTimer(std::shared_ptr<TimerNode> timer){
+            timer_ = timer;
+        }
     
 
 

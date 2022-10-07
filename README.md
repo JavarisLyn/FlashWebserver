@@ -66,7 +66,7 @@ Http without keep-alive useds a new tcp connection every request round, which ca
 ### where to use timer?
 - keep-alive = true, use timer to decide when a connection expired(2)
 - keep-alive = false, when a connection is blocked by IO for too long, this connection should be set to disconnected.
-### how it works
+### how it works?
 reference to 《High Performance Linux Server Programming》  
 
 use min-heap(priority_queue in c++) to implement timer. the lateset expire time is the root time. compare to the timer with fixed-frequency, this timer has more accurate.  
@@ -75,3 +75,10 @@ since queue is not able to be accessed randomly, but we really have the need to 
 - set the target timernode *deleted*
 - add a new timernode to replace the old one, which carries the updated expire time
 - when deleting the expired tiemrnode(root node), the nodes which have been set *deleted* would be deleted,too.
+### when to check expire?
+every time when epollwait timeout occurs(EPOLLWAIT_TIMEOUT is set to 5s in FlashWebserver)
+## TODO
+- Make timer a class template
+- Optimize string processing
+- Implement post
+- MySQL support

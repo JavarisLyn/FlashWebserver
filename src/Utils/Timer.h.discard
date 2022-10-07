@@ -1,0 +1,124 @@
+/*
+ * @Version: 
+ * @Author: LiYangfan.justin
+ * @Date: 2022-10-06 10:08:45
+ * @LastEditTime: 2022-10-06 15:40:44
+ * @Description: 
+ * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
+ */
+#pragma once
+#include <unistd.h>
+#include <memory>
+#include <queue>
+#include <deque>
+#include <sys/time.h>
+
+template <typename T>
+class TimerNode{
+    public:
+        TimerNode(std::shared_ptr<T> data, int timeout);
+        ~TimerNode();
+        //update a timernode's expire time,timeout/ms
+        void Update(int timeout);
+        //check if a timernode is expired
+        bool IsExpired();
+        //clear this node
+        void ClearNode();
+        void SetDeleted(){is_deleted_ = true;}
+        bool IsDeleted(){return is_deleted_;}
+        std::size_t GetExpireTime(){return expire_time_;}
+
+    private:
+        bool is_deleted_;
+        //ms
+        size_t expire_time_;
+        std::shared_ptr<T> data_;
+};
+
+template <typename T>
+struct TimerCmp {
+    bool operator()(std::shared_ptr<TimerNode<T>> &a,
+                    std::shared_ptr<TimerNode<T>> &b) const {
+    return a->GetExpireTime() > b->GetExpireTime();
+    }
+};
+
+template <typename T>
+class TimerManager{
+    public:
+        TimerManager();
+        ~TimerManager();
+        void AddTimerNode(std::shared_ptr<T>,int timeout);
+        void HandleExpire();
+    private:
+        std::priority_queue<std::shared_ptr<TimerNode<T>>,std::deque<std::shared_ptr<TimerNode<T>>>,TimerCmp<T>> timer_node_queue_; 
+};
+
+template <typename T>
+TimerNode<T>::TimerNode(std::shared_ptr<T> data, int timeout):
+    data_(data),
+    is_deleted_(false){
+        struct timeval now;
+        gettimeofday(&now,nullptr);
+        expire_time_ = (now.tv_sec % 1000) * 1000 + (now.tv_usec / 1000) + timeout;
+    }
+
+template <typename T>
+TimerNode<T>::~TimerNode(){
+    /* 
+        if update time,then data_ is nullptr,which means handleClose won't be called.
+        if expired,data_ is not null,handleClose will be called.
+     */
+    if(data_){
+        //then http object will call deconstruct
+       data_->HandleClose();
+    }
+}
+
+template <typename T>
+void TimerNode<T>::Update(int timeout){
+    struct timeval now;
+    gettimeofday(&now,nullptr);
+    expire_time_ = (now.tv_sec % 1000) * 1000 + (now.tv_usec / 1000) + timeout;
+}
+
+template <typename T>
+bool TimerNode<T>::IsExpired(){
+    struct timeval now;
+    gettimeofday(&now, nullptr);
+    size_t nowms = (((now.tv_sec % 10000) * 1000) + (now.tv_usec / 1000));
+    if(nowms < expire_time_){
+        return true;
+    }else{
+        SetDeleted();
+        return false;
+    }
+}
+
+template <typename T>
+void TimerNode<T>::ClearNode(){
+    //this shared_ptr won't point to it's data any more
+    data_.reset();
+    SetDeleted();
+}
+
+template <typename T>
+void TimerManager<T>::AddTimerNode(std::shared_ptr<T> data,int timeout){
+    std::shared_ptr<TimerNode<T>> timer_node(new TimerNode<T>(data,timeout));
+    timer_node_queue_.push(timer_node);
+    data->LinkTimer(timer_node);
+}
+
+template <typename T>
+void TimerManager<T>::HandleExpire(){
+   while(!timer_node_queue_.empty()){
+       std::shared_ptr<TimerNode<T>> timer_node = timer_node_queue_.top();
+       if(timer_node->IsExpired() || timer_node->IsDeleted()){
+           timer_node_queue_.pop();
+       }else{
+           break;
+       }
+   }
+}
+
+

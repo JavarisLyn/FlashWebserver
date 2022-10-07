@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-05 10:17:52
- * @LastEditTime: 2022-10-03 20:48:43
+ * @LastEditTime: 2022-10-07 12:33:37
  * @Description:
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -22,23 +22,27 @@ EventLoop::EventLoop()
     wakeup_channel_->SetToListenEvents(EPOLLIN | EPOLLET);
     // wakeup_channel_->SetReadCallback(bind(&EventLoop::handleRead, this));
     // wakeup_channel_->SetConnCallback(bind(&EventLoop::handleConn, this));
-    epoller_->EpollAdd(wakeup_channel_);
+    epoller_->EpollAdd(wakeup_channel_,0);
+    //std::cout<<"Eventloop construct"<<std::endl;
 }
 
 EventLoop:: ~EventLoop(){
     close(wakeup_fd_);
-    // std::cout<<"Eventloop deconstruct"<<std::endl;
+    //std::cout<<"Eventloop deconstruct"<<std::endl;
 }
 
 void EventLoop::Loop(){
     while(is_looping_){
+        //std::cout<<"loop"<<std::endl;
         std::vector<SharedChannel> returned_channels;
         returned_channels = epoller_->EpollWait();
+        // std::cout<<"wait return"<<std::endl;
         for(auto& it:returned_channels){
             it->HandleEvents();
         }
         /* 开始执行回调函数 */
         DoCallbacks();
+        epoller_->HandleExpire();
     }
 }
 

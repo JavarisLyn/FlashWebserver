@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-05 11:07:40
- * @LastEditTime: 2022-10-03 16:14:40
+ * @LastEditTime: 2022-10-07 10:36:37
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -26,6 +26,6 @@ void signalHandler( int signum )
 
 int main(){
     EventLoop* eventloop = new EventLoop();
-    Server server(eventloop,8088,10);
+    Server server(eventloop,8088,3);
     server.start();
 }
