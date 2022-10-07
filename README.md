@@ -1,5 +1,7 @@
+![GitHub](https://img.shields.io/github/license/JavarisLyn/FlashWebserver)
+
 # Description
-### FlashWebserver is a C++ 11 based Webserver. On the basis of implementing basic tcp communication, HTTP service is supported, including most features of http1.0 & http1.1. 
+FlashWebserver is a C++ 11 based Webserver. On the basis of implementing basic tcp communication, HTTP request&response is supported, including most features of http1.0 & http1.1. 
 # Environment
 - 4vCPUs | 8GiB | c7.xlarge.2 CentOS 8.2 64bit | SSD 40 GB
 - g++ (GCC) 8.5.0
@@ -12,25 +14,15 @@
 - Mutilthread
 - Http,persistent connections and pipelining support
 - Uses Modern C++
-# Get Started
+# Usage
 ```
 cd FlashWebserver/build/
 sh ../build.sh
 ./FalshWebserver
 ```
-# Benchmark
-### webbench -c 500 -t 60 http://127.0.0.1:8088/index.html
-```
-[root@ecs-7073 ~]# webbench -c 500 -t 10 http://127.0.0.1:8088/index.html
-Webbench - Simple Web Benchmark 1.5
-Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.
+# Result
+[Result doc](docs/test_result.md)
 
-Benchmarking: GET http://127.0.0.1:8088/index.html
-500 clients, running 10 sec.
-
-Speed=2150262 pages/min, 3798796 bytes/sec.
-Requests: 358377 susceed, 0 failed.
-```
 # Framework
 ## Reactor
 ![http header parse](./pics/reactor.jpg)
@@ -77,7 +69,20 @@ since queue is not able to be accessed randomly, but we really have the need to 
 - when deleting the expired tiemrnode(root node), the nodes which have been set *deleted* would be deleted,too.
 ### when to check expire?
 every time when epollwait timeout occurs(EPOLLWAIT_TIMEOUT is set to 5s in FlashWebserver)
-## TODO
+
+# Code count
+Date : 2022-10-07 12:54:38
+
+Total : 24 files,  1490 codes, 380 comments, 259 blanks, all 2129 lines, 20.32% comment rate
+
+## Languages
+| language | files | code | comment | blank | total | comment rate |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| C++ | 21 | 1,331 | 379 | 233 | 1,943 | 22.16% |
+| Markdown | 2 | 154 | 0 | 25 | 179 | 0.00% |
+| Shell Script | 1 | 5 | 1 | 1 | 7 | 16.67% |
+
+# TODO
 - Make timer a class template
 - Optimize string processing
 - Implement post
