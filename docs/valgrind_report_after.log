@@ -1,0 +1,12 @@
+==2650== Memcheck, a memory error detector
+==2650== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==2650== Using Valgrind-3.19.0 and LibVEX; rerun with -h for copyright info
+==2650== Command: ./FlashWebserver
+==2650== Parent PID: 1875
+==2650==  
+==2650== HEAP SUMMARY:
+==2650==     in use at exit: 0 bytes in 0 blocks
+==2650==   total heap usage: 142 allocs, 142 frees, 281,475 bytes allocated
+==2650== 
+==2650== All heap blocks were freed -- no leaks are possible
+==2650== 

@@ -70,6 +70,11 @@ since queue is not able to be accessed randomly, but we really have the need to 
 ### when to check expire?
 every time when epollwait timeout occurs(EPOLLWAIT_TIMEOUT is set to 5s in FlashWebserver)
 
+# Memory check
+Use Valgrind to check memory leak.
+See result at [valgrind_analysis](docs/valgrind_analysis.md)
+
+
 # Code count
 Date : 2022-10-07 12:54:38
 

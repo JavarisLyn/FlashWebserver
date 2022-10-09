@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-05 10:17:52
- * @LastEditTime: 2022-10-07 13:20:07
+ * @LastEditTime: 2022-10-08 17:23:23
  * @Description:
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -27,15 +27,22 @@ EventLoop::EventLoop()
 }
 
 EventLoop:: ~EventLoop(){
+    this->RemoveFromEpoller(wakeup_channel_);
     close(wakeup_fd_);
-    //std::cout<<"Eventloop deconstruct"<<std::endl;
+    std::cout<<"Eventloop deconstruct"<<std::endl;
 }
 
 void EventLoop::Loop(){
-    while(is_looping_){
+    std::cout<<"loop in"<<std::this_thread::get_id()<<std::endl;
+    int timeout_count = 0;
+    while(is_looping_ && timeout_count<5){
         //std::cout<<"loop"<<std::endl;
         std::vector<SharedChannel> returned_channels;
         returned_channels = epoller_->EpollWait();
+        if(returned_channels.size() == 0){
+            timeout_count++;
+        }
+        // std::cout<<"returned_channels.size()"<<returned_channels.size()<<std::endl;
         // std::cout<<"wait return"<<std::endl;
         for(auto& it:returned_channels){
             it->HandleEvents();
@@ -44,6 +51,7 @@ void EventLoop::Loop(){
         DoCallbacks();
         epoller_->HandleExpire();
     }
+    std::cout<<"loop out"<<std::this_thread::get_id()<<std::endl;
 }
 
 void EventLoop::DoCallbacks(){

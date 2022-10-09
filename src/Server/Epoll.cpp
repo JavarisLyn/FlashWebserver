@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 17:08:39
- * @LastEditTime: 2022-10-07 12:33:19
+ * @LastEditTime: 2022-10-08 14:11:10
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -42,7 +42,7 @@ void Epoll::EpollAdd(SharedChannel channel, int timeout){
     /* how ?不加move报错 */
     fd2channel_.insert(std::pair<int,SharedChannel>(fd,channel));
     fd2http_.insert(std::pair<int,std::shared_ptr<Http>>(fd,channel->GetHolder()));
-    LOG_TRACE("fd2channel_ isnerrt,fd:%d",fd);
+    //LOG_TRACE("fd2channel_ isnerrt,fd:%d",fd);
 }
 
 void Epoll::EpollModify(SharedChannel channel, int timeout){
@@ -72,13 +72,13 @@ void Epoll::add_timer(SharedChannel shared_channel, int timeout){
 
 void Epoll::EpollDel(SharedChannel channel){
     int fd = channel->Getfd();
-    struct epoll_event *event;
-    event->events = channel->GetToListenEvents();
-    if(epoll_ctl(epoll_fd_,EPOLL_CTL_DEL,fd,event)<0){
-        LOG_TRACE("epoll ctl delete error%d\n",fd);
+    struct epoll_event event;
+    event.events = channel->GetToListenEvents();
+    if(epoll_ctl(epoll_fd_,EPOLL_CTL_DEL,fd,&event)<0){
+        //LOG_TRACE("epoll ctl delete error%d\n",fd);
         perror("epoll ctl delete error");
     }else{
-        LOG_TRACE("epoll ctl delete success%d\n",fd);
+        //LOG_TRACE("epoll ctl delete success%d\n",fd);
         // std::cout<<"epoll ctl delete success"<<std::endl;
     }
     size_t n = fd2channel_.erase(fd);
@@ -106,7 +106,7 @@ std::vector<SharedChannel> Epoll::EpollWait(){
                 for(auto& t:fd2channel_){
                     channelFds += std::to_string(t.first);
                 }
-                LOG_TRACE("channel nullptr:%s,map:%d\n",channelFds,fd);
+                //LOG_TRACE("channel nullptr:%s,map:%d\n",channelFds,fd);
                 continue;
             }
             channel->SetActiveEvents(returned_fd_events_[i].events);

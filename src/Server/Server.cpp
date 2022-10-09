@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-07 21:30:58
- * @LastEditTime: 2022-10-07 12:39:37
+ * @LastEditTime: 2022-10-08 17:05:51
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -28,16 +28,16 @@ void output(const char* data, size_t len){
 
 
 void Server::start(){
-    FlashLogger::LogConfig logConfig;
-    logConfig.flushInterval = 10;
-    logConfig.initBufferNodeListSize = 3;
-    logConfig.rollFileSize = 256 * 1024 * 1024;
-    FlashLogger::Logger::setConfig(logConfig);
+    // FlashLogger::LogConfig logConfig;
+    // logConfig.flushInterval = 10;
+    // logConfig.initBufferNodeListSize = 3;
+    // logConfig.rollFileSize = 256 * 1024 * 1024;
+    // FlashLogger::Logger::setConfig(logConfig);
  
-    FlashLogger::Logger::setOutPutFunc(output);
-    asynLogger = std::unique_ptr<FlashLogger::AsynLogger>(new FlashLogger::AsynLogger());
-    asynLogger->start();
-    LOG_TRACE("server start","123");
+    // FlashLogger::Logger::setOutPutFunc(output);
+    // asynLogger = std::unique_ptr<FlashLogger::AsynLogger>(new FlashLogger::AsynLogger());
+    // asynLogger->start();
+    //LOG_TRACE("server start","123");
     
     eventLoopThreadPool_->start();
 
@@ -47,12 +47,17 @@ void Server::start(){
     SharedChannel channel(new Channel(event_loop_,listen_fd_));
     channel->SetConnCallback(std::bind(&Server::HandleNewConn,this));
     channel->SetReadCallback([](){
-        // std::cout<<"new read"<<std::endl;
+        std::cout<<"new read"<<std::endl;
     });
     channel->SetToListenEvents(EPOLLIN | EPOLLET);
     
-    event_loop_->AddToEpoller(std::move(channel),0);//won't added into timer_manager
+    event_loop_->AddToEpoller(std::move(channel),15000);//won't added into timer_manager
     event_loop_->Loop();
+}
+
+void Server::shutdown(){
+    
+    eventLoopThreadPool_ = nullptr;
 }
 
 void Server::HandleNewConn(){
@@ -68,7 +73,7 @@ void Server::HandleNewConn(){
             // std::cout<<"set socket non block failed"<<std::endl;
         }
         EventLoop *new_loop = eventLoopThreadPool_->GetNextLoop();
-        std::shared_ptr<Http> new_http(new Http(new_loop,accept_fd,false));
+        std::shared_ptr<Http> new_http(new Http(new_loop,accept_fd,true));
 
         new_loop->RunFunction(std::bind(&Http::Init,new_http));
 
@@ -84,4 +89,5 @@ void Server::HandleNewConn(){
         // new_loop->RunFunction(std::bind(&EventLoop::AddToEpoller,new_loop,channel));
         // new_loop->AddToEpoller(std::move(channel));
     }
+    
 }

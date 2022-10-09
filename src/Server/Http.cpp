@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-20 14:34:54
- * @LastEditTime: 2022-10-07 12:33:47
+ * @LastEditTime: 2022-10-07 14:10:01
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -33,12 +33,12 @@ Http::Http(EventLoop* eventloop,int fd,bool keep_alive):
         channel_->SetWriteCallback(std::bind(&Http::HandleWrite,this));
         channel_->SetConnCallback(std::bind(&Http::HandleCurrentConn,this));
         //std::cout<<"http created"<<std::endl;
-        LOG_TRACE("http construct,fd:%d\n",fd_);
+        //LOG_TRACE("http construct,fd:%d\n",fd_);
     }
 
 Http::~Http(){
     close(fd_);
-    LOG_TRACE("http deconstruct,fd:%d\n",fd_);
+    //LOG_TRACE("http deconstruct,fd:%d\n",fd_);
     //std::cout<<"http deconstruct,connection closed"<<std::endl;
 }
 

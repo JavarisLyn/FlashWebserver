@@ -1,0 +1,185 @@
+==10620== Memcheck, a memory error detector
+==10620== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==10620== Using Valgrind-3.19.0 and LibVEX; rerun with -h for copyright info
+==10620== Command: ./FlashWebserver
+==10620== Parent PID: 1785
+==10620== 
+==10620== 
+==10620== HEAP SUMMARY:
+==10620==     in use at exit: 50,664 bytes in 16 blocks
+==10620==   total heap usage: 108,253 allocs, 108,237 frees, 7,900,292 bytes allocated
+==10620== 
+==10620== 24 bytes in 1 blocks are indirectly lost in loss record 1 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x44CE11: std::__shared_count<(__gnu_cxx::_Lock_policy)2>::__shared_count<Channel*>(Channel*) (shared_ptr_base.h:623)
+==10620==    by 0x44C9CE: std::__shared_count<(__gnu_cxx::_Lock_policy)2>::__shared_count<Channel*>(Channel*, std::integral_constant<bool, false>) (shared_ptr_base.h:634)
+==10620==    by 0x44C3EF: std::__shared_ptr<Channel, (__gnu_cxx::_Lock_policy)2>::__shared_ptr<Channel, void>(Channel*) (shared_ptr_base.h:1123)
+==10620==    by 0x44BF1E: std::shared_ptr<Channel>::shared_ptr<Channel, void>(Channel*) (shared_ptr.h:139)
+==10620==    by 0x44B55E: EventLoop::EventLoop() (EventLoop.cpp:19)
+==10620==    by 0x458743: main (Main.cpp:28)
+==10620== 
+==10620== 24 bytes in 1 blocks are indirectly lost in loss record 2 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x44AC53: __gnu_cxx::new_allocator<std::__detail::_Hash_node_base*>::allocate(unsigned long, void const*) (new_allocator.h:111)
+==10620==    by 0x44AADE: std::allocator_traits<std::allocator<std::__detail::_Hash_node_base*> >::allocate(std::allocator<std::__detail::_Hash_node_base*>&, unsigned long) (alloc_traits.h:436)
+==10620==    by 0x44A7F1: std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Channel> >, false> > >::_M_allocate_buckets(unsigned long) (hashtable_policy.h:2134)
+==10620==    by 0x44A3E8: std::_Hashtable<int, std::pair<int const, std::shared_ptr<Channel> >, std::allocator<std::pair<int const, std::shared_ptr<Channel> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_allocate_buckets(unsigned long) (hashtable.h:361)
+==10620==    by 0x449A34: std::_Hashtable<int, std::pair<int const, std::shared_ptr<Channel> >, std::allocator<std::pair<int const, std::shared_ptr<Channel> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_rehash_aux(unsigned long, std::integral_constant<bool, true>) (hashtable.h:2105)
+==10620==    by 0x448C73: std::_Hashtable<int, std::pair<int const, std::shared_ptr<Channel> >, std::allocator<std::pair<int const, std::shared_ptr<Channel> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_rehash(unsigned long, unsigned long const&) (hashtable.h:2084)
+==10620==    by 0x44768B: std::_Hashtable<int, std::pair<int const, std::shared_ptr<Channel> >, std::allocator<std::pair<int const, std::shared_ptr<Channel> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_insert_unique_node(unsigned long, unsigned long, std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Channel> >, false>*, unsigned long) (hashtable.h:1730)
+==10620==    by 0x447031: std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Channel> >, false, false>, bool> std::_Hashtable<int, std::pair<int const, std::shared_ptr<Channel> >, std::allocator<std::pair<int const, std::shared_ptr<Channel> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_emplace<std::pair<int, std::shared_ptr<Channel> > >(std::integral_constant<bool, true>, std::pair<int, std::shared_ptr<Channel> >&&) (hashtable.h:1677)
+==10620==    by 0x446451: std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Channel> >, false, false>, bool> std::_Hashtable<int, std::pair<int const, std::shared_ptr<Channel> >, std::allocator<std::pair<int const, std::shared_ptr<Channel> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::emplace<std::pair<int, std::shared_ptr<Channel> > >(std::pair<int, std::shared_ptr<Channel> >&&) (hashtable.h:743)
+==10620==    by 0x445C41: std::enable_if<std::is_constructible<std::pair<int const, std::shared_ptr<Channel> >, std::pair<int, std::shared_ptr<Channel> >&&>::value, std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Channel> >, false, false>, bool> >::type std::unordered_map<int, std::shared_ptr<Channel>, std::hash<int>, std::equal_to<int>, std::allocator<std::pair<int const, std::shared_ptr<Channel> > > >::insert<std::pair<int, std::shared_ptr<Channel> > >(std::pair<int, std::shared_ptr<Channel> >&&) (unordered_map.h:592)
+==10620==    by 0x444BE8: Epoll::EpollAdd(std::shared_ptr<Channel>, int) (Epoll.cpp:43)
+==10620== 
+==10620== 24 bytes in 1 blocks are indirectly lost in loss record 3 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x44AC53: __gnu_cxx::new_allocator<std::__detail::_Hash_node_base*>::allocate(unsigned long, void const*) (new_allocator.h:111)
+==10620==    by 0x44AADE: std::allocator_traits<std::allocator<std::__detail::_Hash_node_base*> >::allocate(std::allocator<std::__detail::_Hash_node_base*>&, unsigned long) (alloc_traits.h:436)
+==10620==    by 0x44A97B: std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Http> >, false> > >::_M_allocate_buckets(unsigned long) (hashtable_policy.h:2134)
+==10620==    by 0x44A672: std::_Hashtable<int, std::pair<int const, std::shared_ptr<Http> >, std::allocator<std::pair<int const, std::shared_ptr<Http> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_allocate_buckets(unsigned long) (hashtable.h:361)
+==10620==    by 0x449FA4: std::_Hashtable<int, std::pair<int const, std::shared_ptr<Http> >, std::allocator<std::pair<int const, std::shared_ptr<Http> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_rehash_aux(unsigned long, std::integral_constant<bool, true>) (hashtable.h:2105)
+==10620==    by 0x4494A1: std::_Hashtable<int, std::pair<int const, std::shared_ptr<Http> >, std::allocator<std::pair<int const, std::shared_ptr<Http> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_rehash(unsigned long, unsigned long const&) (hashtable.h:2084)
+==10620==    by 0x448547: std::_Hashtable<int, std::pair<int const, std::shared_ptr<Http> >, std::allocator<std::pair<int const, std::shared_ptr<Http> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_insert_unique_node(unsigned long, unsigned long, std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Http> >, false>*, unsigned long) (hashtable.h:1730)
+==10620==    by 0x447199: std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Http> >, false, false>, bool> std::_Hashtable<int, std::pair<int const, std::shared_ptr<Http> >, std::allocator<std::pair<int const, std::shared_ptr<Http> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_emplace<std::pair<int, std::shared_ptr<Http> > >(std::integral_constant<bool, true>, std::pair<int, std::shared_ptr<Http> >&&) (hashtable.h:1677)
+==10620==    by 0x44649D: std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Http> >, false, false>, bool> std::_Hashtable<int, std::pair<int const, std::shared_ptr<Http> >, std::allocator<std::pair<int const, std::shared_ptr<Http> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::emplace<std::pair<int, std::shared_ptr<Http> > >(std::pair<int, std::shared_ptr<Http> >&&) (hashtable.h:743)
+==10620==    by 0x445CC5: std::enable_if<std::is_constructible<std::pair<int const, std::shared_ptr<Http> >, std::pair<int, std::shared_ptr<Http> >&&>::value, std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Http> >, false, false>, bool> >::type std::unordered_map<int, std::shared_ptr<Http>, std::hash<int>, std::equal_to<int>, std::allocator<std::pair<int const, std::shared_ptr<Http> > > >::insert<std::pair<int, std::shared_ptr<Http> > >(std::pair<int, std::shared_ptr<Http> >&&) (unordered_map.h:592)
+==10620==    by 0x444C46: Epoll::EpollAdd(std::shared_ptr<Channel>, int) (Epoll.cpp:44)
+==10620== 
+==10620== 24 bytes in 1 blocks are indirectly lost in loss record 4 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x44CE11: std::__shared_count<(__gnu_cxx::_Lock_policy)2>::__shared_count<Channel*>(Channel*) (shared_ptr_base.h:623)
+==10620==    by 0x44C9CE: std::__shared_count<(__gnu_cxx::_Lock_policy)2>::__shared_count<Channel*>(Channel*, std::integral_constant<bool, false>) (shared_ptr_base.h:634)
+==10620==    by 0x44C3EF: std::__shared_ptr<Channel, (__gnu_cxx::_Lock_policy)2>::__shared_ptr<Channel, void>(Channel*) (shared_ptr_base.h:1123)
+==10620==    by 0x44BF1E: std::shared_ptr<Channel>::shared_ptr<Channel, void>(Channel*) (shared_ptr.h:139)
+==10620==    by 0x4501DA: Server::start() (Server.cpp:47)
+==10620==    by 0x45876D: main (Main.cpp:30)
+==10620== 
+==10620== 24 bytes in 1 blocks are indirectly lost in loss record 5 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x4514FD: std::_Function_base::_Base_manager<std::_Bind<void (Server::*(Server*))()> >::_M_clone(std::_Any_data&, std::_Any_data const&, std::integral_constant<bool, false>) (std_function.h:173)
+==10620==    by 0x451035: std::_Function_base::_Base_manager<std::_Bind<void (Server::*(Server*))()> >::_M_manager(std::_Any_data&, std::_Any_data const&, std::_Manager_operation) (std_function.h:208)
+==10620==    by 0x44B2A6: std::function<void ()>::function(std::function<void ()> const&) (std_function.h:658)
+==10620==    by 0x44B1D0: std::function<void ()>::operator=(std::function<void ()> const&) (std_function.h:463)
+==10620==    by 0x44AEAF: Channel::SetConnCallback(std::function<void ()>) (Channel.cpp:62)
+==10620==    by 0x450250: Server::start() (Server.cpp:48)
+==10620==    by 0x45876D: main (Main.cpp:30)
+==10620== 
+==10620== 32 bytes in 1 blocks are indirectly lost in loss record 6 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x449925: __gnu_cxx::new_allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Channel> >, false> >::allocate(unsigned long, void const*) (new_allocator.h:111)
+==10620==    by 0x448B85: std::allocator_traits<std::allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Channel> >, false> > >::allocate(std::allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Channel> >, false> >&, unsigned long) (alloc_traits.h:436)
+==10620==    by 0x4480CD: std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Channel> >, false>* std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Channel> >, false> > >::_M_allocate_node<std::pair<int, std::shared_ptr<Channel> > >(std::pair<int, std::shared_ptr<Channel> >&&) (hashtable_policy.h:2088)
+==10620==    by 0x446F4C: std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Channel> >, false, false>, bool> std::_Hashtable<int, std::pair<int const, std::shared_ptr<Channel> >, std::allocator<std::pair<int const, std::shared_ptr<Channel> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_emplace<std::pair<int, std::shared_ptr<Channel> > >(std::integral_constant<bool, true>, std::pair<int, std::shared_ptr<Channel> >&&) (hashtable.h:1655)
+==10620==    by 0x446451: std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Channel> >, false, false>, bool> std::_Hashtable<int, std::pair<int const, std::shared_ptr<Channel> >, std::allocator<std::pair<int const, std::shared_ptr<Channel> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::emplace<std::pair<int, std::shared_ptr<Channel> > >(std::pair<int, std::shared_ptr<Channel> >&&) (hashtable.h:743)
+==10620==    by 0x445C41: std::enable_if<std::is_constructible<std::pair<int const, std::shared_ptr<Channel> >, std::pair<int, std::shared_ptr<Channel> >&&>::value, std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Channel> >, false, false>, bool> >::type std::unordered_map<int, std::shared_ptr<Channel>, std::hash<int>, std::equal_to<int>, std::allocator<std::pair<int const, std::shared_ptr<Channel> > > >::insert<std::pair<int, std::shared_ptr<Channel> > >(std::pair<int, std::shared_ptr<Channel> >&&) (unordered_map.h:592)
+==10620==    by 0x444BE8: Epoll::EpollAdd(std::shared_ptr<Channel>, int) (Epoll.cpp:43)
+==10620==    by 0x44B5B9: EventLoop::EventLoop() (EventLoop.cpp:25)
+==10620==    by 0x458743: main (Main.cpp:28)
+==10620== 
+==10620== 32 bytes in 1 blocks are indirectly lost in loss record 7 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x449F0F: __gnu_cxx::new_allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Http> >, false> >::allocate(unsigned long, void const*) (new_allocator.h:111)
+==10620==    by 0x449351: std::allocator_traits<std::allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Http> >, false> > >::allocate(std::allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Http> >, false> >&, unsigned long) (alloc_traits.h:436)
+==10620==    by 0x448287: std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Http> >, false>* std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Http> >, false> > >::_M_allocate_node<std::pair<int, std::shared_ptr<Http> > >(std::pair<int, std::shared_ptr<Http> >&&) (hashtable_policy.h:2088)
+==10620==    by 0x4470B4: std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Http> >, false, false>, bool> std::_Hashtable<int, std::pair<int const, std::shared_ptr<Http> >, std::allocator<std::pair<int const, std::shared_ptr<Http> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_emplace<std::pair<int, std::shared_ptr<Http> > >(std::integral_constant<bool, true>, std::pair<int, std::shared_ptr<Http> >&&) (hashtable.h:1655)
+==10620==    by 0x44649D: std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Http> >, false, false>, bool> std::_Hashtable<int, std::pair<int const, std::shared_ptr<Http> >, std::allocator<std::pair<int const, std::shared_ptr<Http> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::emplace<std::pair<int, std::shared_ptr<Http> > >(std::pair<int, std::shared_ptr<Http> >&&) (hashtable.h:743)
+==10620==    by 0x445CC5: std::enable_if<std::is_constructible<std::pair<int const, std::shared_ptr<Http> >, std::pair<int, std::shared_ptr<Http> >&&>::value, std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Http> >, false, false>, bool> >::type std::unordered_map<int, std::shared_ptr<Http>, std::hash<int>, std::equal_to<int>, std::allocator<std::pair<int const, std::shared_ptr<Http> > > >::insert<std::pair<int, std::shared_ptr<Http> > >(std::pair<int, std::shared_ptr<Http> >&&) (unordered_map.h:592)
+==10620==    by 0x444C46: Epoll::EpollAdd(std::shared_ptr<Channel>, int) (Epoll.cpp:44)
+==10620==    by 0x44B5B9: EventLoop::EventLoop() (EventLoop.cpp:25)
+==10620==    by 0x458743: main (Main.cpp:28)
+==10620== 
+==10620== 32 bytes in 1 blocks are indirectly lost in loss record 8 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x449925: __gnu_cxx::new_allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Channel> >, false> >::allocate(unsigned long, void const*) (new_allocator.h:111)
+==10620==    by 0x448B85: std::allocator_traits<std::allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Channel> >, false> > >::allocate(std::allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Channel> >, false> >&, unsigned long) (alloc_traits.h:436)
+==10620==    by 0x4480CD: std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Channel> >, false>* std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Channel> >, false> > >::_M_allocate_node<std::pair<int, std::shared_ptr<Channel> > >(std::pair<int, std::shared_ptr<Channel> >&&) (hashtable_policy.h:2088)
+==10620==    by 0x446F4C: std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Channel> >, false, false>, bool> std::_Hashtable<int, std::pair<int const, std::shared_ptr<Channel> >, std::allocator<std::pair<int const, std::shared_ptr<Channel> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_emplace<std::pair<int, std::shared_ptr<Channel> > >(std::integral_constant<bool, true>, std::pair<int, std::shared_ptr<Channel> >&&) (hashtable.h:1655)
+==10620==    by 0x446451: std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Channel> >, false, false>, bool> std::_Hashtable<int, std::pair<int const, std::shared_ptr<Channel> >, std::allocator<std::pair<int const, std::shared_ptr<Channel> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::emplace<std::pair<int, std::shared_ptr<Channel> > >(std::pair<int, std::shared_ptr<Channel> >&&) (hashtable.h:743)
+==10620==    by 0x445C41: std::enable_if<std::is_constructible<std::pair<int const, std::shared_ptr<Channel> >, std::pair<int, std::shared_ptr<Channel> >&&>::value, std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Channel> >, false, false>, bool> >::type std::unordered_map<int, std::shared_ptr<Channel>, std::hash<int>, std::equal_to<int>, std::allocator<std::pair<int const, std::shared_ptr<Channel> > > >::insert<std::pair<int, std::shared_ptr<Channel> > >(std::pair<int, std::shared_ptr<Channel> >&&) (unordered_map.h:592)
+==10620==    by 0x444BE8: Epoll::EpollAdd(std::shared_ptr<Channel>, int) (Epoll.cpp:43)
+==10620==    by 0x4508F2: EventLoop::AddToEpoller(std::shared_ptr<Channel>, int) (EventLoop.h:27)
+==10620==    by 0x4502F4: Server::start() (Server.cpp:54)
+==10620==    by 0x45876D: main (Main.cpp:30)
+==10620== 
+==10620== 32 bytes in 1 blocks are indirectly lost in loss record 9 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x449F0F: __gnu_cxx::new_allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Http> >, false> >::allocate(unsigned long, void const*) (new_allocator.h:111)
+==10620==    by 0x449351: std::allocator_traits<std::allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Http> >, false> > >::allocate(std::allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Http> >, false> >&, unsigned long) (alloc_traits.h:436)
+==10620==    by 0x448287: std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Http> >, false>* std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<int const, std::shared_ptr<Http> >, false> > >::_M_allocate_node<std::pair<int, std::shared_ptr<Http> > >(std::pair<int, std::shared_ptr<Http> >&&) (hashtable_policy.h:2088)
+==10620==    by 0x4470B4: std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Http> >, false, false>, bool> std::_Hashtable<int, std::pair<int const, std::shared_ptr<Http> >, std::allocator<std::pair<int const, std::shared_ptr<Http> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_emplace<std::pair<int, std::shared_ptr<Http> > >(std::integral_constant<bool, true>, std::pair<int, std::shared_ptr<Http> >&&) (hashtable.h:1655)
+==10620==    by 0x44649D: std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Http> >, false, false>, bool> std::_Hashtable<int, std::pair<int const, std::shared_ptr<Http> >, std::allocator<std::pair<int const, std::shared_ptr<Http> > >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::emplace<std::pair<int, std::shared_ptr<Http> > >(std::pair<int, std::shared_ptr<Http> >&&) (hashtable.h:743)
+==10620==    by 0x445CC5: std::enable_if<std::is_constructible<std::pair<int const, std::shared_ptr<Http> >, std::pair<int, std::shared_ptr<Http> >&&>::value, std::pair<std::__detail::_Node_iterator<std::pair<int const, std::shared_ptr<Http> >, false, false>, bool> >::type std::unordered_map<int, std::shared_ptr<Http>, std::hash<int>, std::equal_to<int>, std::allocator<std::pair<int const, std::shared_ptr<Http> > > >::insert<std::pair<int, std::shared_ptr<Http> > >(std::pair<int, std::shared_ptr<Http> >&&) (unordered_map.h:592)
+==10620==    by 0x444C46: Epoll::EpollAdd(std::shared_ptr<Channel>, int) (Epoll.cpp:44)
+==10620==    by 0x4508F2: EventLoop::AddToEpoller(std::shared_ptr<Channel>, int) (EventLoop.h:27)
+==10620==    by 0x4502F4: Server::start() (Server.cpp:54)
+==10620==    by 0x45876D: main (Main.cpp:30)
+==10620== 
+==10620== 64 bytes in 1 blocks are indirectly lost in loss record 10 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x443F61: __gnu_cxx::new_allocator<std::shared_ptr<TimerNode>*>::allocate(unsigned long, void const*) (new_allocator.h:111)
+==10620==    by 0x443DD2: std::allocator_traits<std::allocator<std::shared_ptr<TimerNode>*> >::allocate(std::allocator<std::shared_ptr<TimerNode>*>&, unsigned long) (alloc_traits.h:436)
+==10620==    by 0x443B62: std::_Deque_base<std::shared_ptr<TimerNode>, std::allocator<std::shared_ptr<TimerNode> > >::_M_allocate_map(unsigned long) (stl_deque.h:617)
+==10620==    by 0x447F2E: std::_Deque_base<std::shared_ptr<TimerNode>, std::allocator<std::shared_ptr<TimerNode> > >::_M_initialize_map(unsigned long) (stl_deque.h:690)
+==10620==    by 0x446D75: std::_Deque_base<std::shared_ptr<TimerNode>, std::allocator<std::shared_ptr<TimerNode> > >::_Deque_base() (stl_deque.h:493)
+==10620==    by 0x4462FF: std::deque<std::shared_ptr<TimerNode>, std::allocator<std::shared_ptr<TimerNode> > >::deque() (stl_deque.h:898)
+==10620==    by 0x445B39: std::priority_queue<std::shared_ptr<TimerNode>, std::deque<std::shared_ptr<TimerNode>, std::allocator<std::shared_ptr<TimerNode> > >, TimerCmp>::priority_queue<std::deque<std::shared_ptr<TimerNode>, std::allocator<std::shared_ptr<TimerNode> > >, void>() (stl_queue.h:486)
+==10620==    by 0x445713: TimerManager::TimerManager() (Timer.h:45)
+==10620==    by 0x444A18: Epoll::Epoll() (Epoll.cpp:17)
+==10620==    by 0x44B4C8: EventLoop::EventLoop() (EventLoop.cpp:14)
+==10620==    by 0x458743: main (Main.cpp:28)
+==10620== 
+==10620== 168 bytes in 1 blocks are indirectly lost in loss record 11 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x44B53A: EventLoop::EventLoop() (EventLoop.cpp:19)
+==10620==    by 0x458743: main (Main.cpp:28)
+==10620== 
+==10620== 168 bytes in 1 blocks are indirectly lost in loss record 12 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x4501A6: Server::start() (Server.cpp:47)
+==10620==    by 0x45876D: main (Main.cpp:30)
+==10620== 
+==10620== 240 bytes in 1 blocks are indirectly lost in loss record 13 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x44B4BD: EventLoop::EventLoop() (EventLoop.cpp:14)
+==10620==    by 0x458743: main (Main.cpp:28)
+==10620== 
+==10620== 512 bytes in 1 blocks are indirectly lost in loss record 14 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x443C27: __gnu_cxx::new_allocator<std::shared_ptr<TimerNode> >::allocate(unsigned long, void const*) (new_allocator.h:111)
+==10620==    by 0x443857: std::allocator_traits<std::allocator<std::shared_ptr<TimerNode> > >::allocate(std::allocator<std::shared_ptr<TimerNode> >&, unsigned long) (alloc_traits.h:436)
+==10620==    by 0x4430C3: std::_Deque_base<std::shared_ptr<TimerNode>, std::allocator<std::shared_ptr<TimerNode> > >::_M_allocate_node() (stl_deque.h:603)
+==10620==    by 0x4491F0: std::_Deque_base<std::shared_ptr<TimerNode>, std::allocator<std::shared_ptr<TimerNode> > >::_M_create_nodes(std::shared_ptr<TimerNode>**, std::shared_ptr<TimerNode>**) (stl_deque.h:728)
+==10620==    by 0x447F87: std::_Deque_base<std::shared_ptr<TimerNode>, std::allocator<std::shared_ptr<TimerNode> > >::_M_initialize_map(unsigned long) (stl_deque.h:702)
+==10620==    by 0x446D75: std::_Deque_base<std::shared_ptr<TimerNode>, std::allocator<std::shared_ptr<TimerNode> > >::_Deque_base() (stl_deque.h:493)
+==10620==    by 0x4462FF: std::deque<std::shared_ptr<TimerNode>, std::allocator<std::shared_ptr<TimerNode> > >::deque() (stl_deque.h:898)
+==10620==    by 0x445B39: std::priority_queue<std::shared_ptr<TimerNode>, std::deque<std::shared_ptr<TimerNode>, std::allocator<std::shared_ptr<TimerNode> > >, TimerCmp>::priority_queue<std::deque<std::shared_ptr<TimerNode>, std::allocator<std::shared_ptr<TimerNode> > >, void>() (stl_queue.h:486)
+==10620==    by 0x445713: TimerManager::TimerManager() (Timer.h:45)
+==10620==    by 0x444A18: Epoll::Epoll() (Epoll.cpp:17)
+==10620==    by 0x44B4C8: EventLoop::EventLoop() (EventLoop.cpp:14)
+==10620== 
+==10620== 49,152 bytes in 1 blocks are indirectly lost in loss record 15 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x449CA4: __gnu_cxx::new_allocator<epoll_event>::allocate(unsigned long, void const*) (new_allocator.h:111)
+==10620==    by 0x448F7F: std::allocator_traits<std::allocator<epoll_event> >::allocate(std::allocator<epoll_event>&, unsigned long) (alloc_traits.h:436)
+==10620==    by 0x447B9D: std::_Vector_base<epoll_event, std::allocator<epoll_event> >::_M_allocate(unsigned long) (stl_vector.h:296)
+==10620==    by 0x446B42: std::_Vector_base<epoll_event, std::allocator<epoll_event> >::_M_create_storage(unsigned long) (stl_vector.h:311)
+==10620==    by 0x446072: std::_Vector_base<epoll_event, std::allocator<epoll_event> >::_Vector_base(unsigned long, std::allocator<epoll_event> const&) (stl_vector.h:260)
+==10620==    by 0x445AEB: std::vector<epoll_event, std::allocator<epoll_event> >::vector(unsigned long, std::allocator<epoll_event> const&) (stl_vector.h:416)
+==10620==    by 0x4449FA: Epoll::Epoll() (Epoll.cpp:17)
+==10620==    by 0x44B4C8: EventLoop::EventLoop() (EventLoop.cpp:14)
+==10620==    by 0x458743: main (Main.cpp:28)
+==10620== 
+==10620== 50,664 (112 direct, 50,552 indirect) bytes in 1 blocks are definitely lost in loss record 16 of 16
+==10620==    at 0x4C3676F: operator new(unsigned long) (vg_replace_malloc.c:422)
+==10620==    by 0x458738: main (Main.cpp:28)
+==10620== 
+==10620== LEAK SUMMARY:
+==10620==    definitely lost: 112 bytes in 1 blocks
+==10620==    indirectly lost: 50,552 bytes in 15 blocks
+==10620==      possibly lost: 0 bytes in 0 blocks
+==10620==    still reachable: 0 bytes in 0 blocks
+==10620==         suppressed: 0 bytes in 0 blocks
+==10620== 
+==10620== For lists of detected and suppressed errors, rerun with: -s
+==10620== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)

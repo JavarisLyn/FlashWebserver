@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-05 11:00:30
- * @LastEditTime: 2022-10-07 13:20:25
+ * @LastEditTime: 2022-10-08 16:28:58
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -17,6 +17,7 @@ class Server{
         Server(EventLoop * event_loop,int port,int thread_num);
         ~Server() = default;
         void start();
+        void shutdown();
         
 
     private:

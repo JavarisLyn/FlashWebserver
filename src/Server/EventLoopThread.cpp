@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-07 17:17:05
- * @LastEditTime: 2022-09-11 20:47:32
+ * @LastEditTime: 2022-10-09 20:56:44
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -15,6 +15,10 @@ EventLoopThread::EventLoopThread():
     std::thread t(&EventLoopThread::ThreadFunc,this);
     thread_ = std::move(t);
 } 
+
+EventLoopThread::~EventLoopThread(){
+    std::cout<<"thread out"<<std::endl;
+}
 
 EventLoop* EventLoopThread::GetLoop(){
     /* eventloop_是异步创建,需要阻塞等待eventloop_初始化完毕 */

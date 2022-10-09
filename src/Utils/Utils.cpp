@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 19:29:58
- * @LastEditTime: 2022-10-06 21:14:04
+ * @LastEditTime: 2022-10-08 16:25:29
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -35,6 +35,12 @@ int Utils::SocketBindListen(int port){
         perror("setsockopt failed");
 		return -1;
 	}
+    struct timeval timeout = {5,0}; 
+    if(::setsockopt(listen_fd,SOL_SOCKET,SO_RCVTIMEO,(char *)&timeout,sizeof(struct timeval))<0){
+        perror("setsockopt timeout failed");
+		return -1;
+    }
+
 
     struct sockaddr_in sever_addr;
     bzero((char *)&sever_addr,sizeof(sever_addr));

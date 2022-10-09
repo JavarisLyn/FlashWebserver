@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-07 17:19:41
- * @LastEditTime: 2022-09-07 20:35:51
+ * @LastEditTime: 2022-10-08 16:30:24
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -14,7 +14,7 @@
 class EventLoopThreadPool{
     public:
         EventLoopThreadPool(int thread_num);
-        ~EventLoopThreadPool() = default;
+        ~EventLoopThreadPool();
         void start();
         EventLoop* GetNextLoop();
 

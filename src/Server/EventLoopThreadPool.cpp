@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-07 17:19:53
- * @LastEditTime: 2022-09-07 22:49:41
+ * @LastEditTime: 2022-10-08 16:40:03
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -15,6 +15,15 @@ EventLoopThreadPool::EventLoopThreadPool(int thread_num):
     next_loop_(0)
 {}
 
+EventLoopThreadPool::~EventLoopThreadPool(){
+    for(auto& loop :eventloops){
+        loop->Quit();
+    }
+    for(auto& t:threads){
+        t.get()->thread_.join();
+    }
+    std::cout<<"~EventLoopThreadPool"<<std::endl;
+}
 
 void EventLoopThreadPool::start(){
     started_ = true;
@@ -22,8 +31,7 @@ void EventLoopThreadPool::start(){
         std::shared_ptr<EventLoopThread> t(new EventLoopThread());
         threads.push_back(t);
         eventloops.push_back(t->GetLoop());
-    }
-    
+    }  
 }
 
 EventLoop* EventLoopThreadPool::GetNextLoop(){
