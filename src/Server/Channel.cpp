@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-03 15:55:03
- * @LastEditTime: 2022-10-09 20:41:44
+ * @LastEditTime: 2022-10-09 22:11:11
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -29,7 +29,7 @@ int Channel::Getfd(){
     return fd_;
 }
 
-/* 非构造函数不能使用成员初值列 */
+/* only constructor can use member initialization list */
 void Channel::Setfd(int fd){
     fd_ = fd;
 }
@@ -46,19 +46,19 @@ void Channel::SetActiveEvents(__uint32_t active_events){
     active_events_ = active_events;
 }
 
-void Channel::SetReadCallback(Callback read_callback){
+void Channel::SetReadCallback(Callback&& read_callback){
     read_callback_ = read_callback;
 }
 
-void Channel::SetWriteCallback(Callback write_callback){
+void Channel::SetWriteCallback(Callback&& write_callback){
     write_callback_ = write_callback;
 }
 
-void Channel::SetErrorCallback(Callback error_callback){
+void Channel::SetErrorCallback(Callback&& error_callback){
     error_callback_ = error_callback;
 }
 
-void Channel::SetConnCallback(Callback conn_callback){
+void Channel::SetConnCallback(Callback&& conn_callback){
     conn_callback_ = conn_callback;
 }
 

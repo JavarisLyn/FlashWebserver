@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 16:56:44
- * @LastEditTime: 2022-10-04 15:11:37
+ * @LastEditTime: 2022-10-09 22:20:13
  * @Description: 一个Channel负责处理一个fd,属于一个EventLoop
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -14,7 +14,7 @@
 #include <lyf/Logger/Logger.h>
 #include <lyf/Logger/LogConfig.h>
 
-/* 前向声明，因为Channel包含Eventloop，同时Eventloop也包含Channel，include会导致循环引用 */
+/* forward declaration,to void circular reference(channel & eventloop) */
 /* https://www.jianshu.com/p/9e247c805d5a */
 class EventLoop;
 class Http;
@@ -25,22 +25,22 @@ private:
 
     typedef std::function<void()> Callback;
 
-    /* 处理的fd */
+    /* fd this channel to process */
     int fd_;
 
-    /* 所属的EventLoop */
+    /* eventLoop this channel belongs to */
     EventLoop* eventloop_;
 
-    /* 所属的应用层对象,用weak ptr防止循环引用 */
+    /* application layer obeject this channel belongs to,use weak ptr to avoid circular reference */
     std::weak_ptr<Http> holder_;
 
-    /* 监听到的活跃的事件,是to_listen_events的子集 */
+    /* active events returned from epoller, is subset of to_listen_events */
     __uint32_t active_events_;
 
-    /* 需要监听的事件 */
+    /* events need to be listend */
     __uint32_t to_listen_events_;
 
-    /* 对应事件的回调函数 */
+    /* callbacks */
     Callback read_callback_;
     Callback write_callback_;
     Callback error_callback_;
@@ -55,19 +55,17 @@ public:
     int Getfd();
     void Setfd(int fd);
 
-    /* todo 这里比较复杂，牵扯到左值、右值、万能引用、函数模板 */
-    void SetReadCallback(Callback read_callback);
-    void SetWriteCallback(Callback write_callback);
-    void SetErrorCallback(Callback error_callback);
-    void SetConnCallback(Callback conn_callback);
+    void SetReadCallback(Callback&& read_callback);
+    void SetWriteCallback(Callback&& write_callback);
+    void SetErrorCallback(Callback&& error_callback);
+    void SetConnCallback(Callback&& conn_callback);
 
-    /* 获取和更新需要监听的事件 */
     __uint32_t GetToListenEvents();
     void SetToListenEvents(__uint32_t new_events);
     void SetActiveEvents(__uint32_t active_events);
 
 public:
-    /* 处理监听到的事件 */
+
     void HandleEvents();
     void HandleRead();
     void HandleWrite();
@@ -76,14 +74,14 @@ public:
 
     void SetActiveEvents();
     void SetHolder(std::shared_ptr<Http> holder){
-        /* weak_ptr和shared_ptr可以相互转化，shared_ptr可以直接赋值给weak_ptr
-        weak_ptr也可以通过调用lock函数来获得shared_ptr */
+        /* weak_ptr and shared_ptr can be transformed to each other, 
+        a shared_ptr can be assigned to a weak_ptr directly,
+        weak_ptr can be transformed to shared_ptr by weak_ptr.lock() */
         holder_ = holder;
     }
     std::shared_ptr<Http> GetHolder(){
-        /* 如果weak_ptr对象已过期，返回一个空shared_ptr对象；否则，
-        返回一个weak_ptr内部指针相关联的shared_ptr对象
-        因此，shared_ptr对象的引用计数+1 */
+        /* lock() return null shared_ptr if expired() == true(managed object is deleted),
+        return shared_ptr if expired() == false,and use_count()++ */
         std::shared_ptr<Http> ret(holder_.lock());
         return ret;
     }

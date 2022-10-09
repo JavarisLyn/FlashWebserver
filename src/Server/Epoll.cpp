@@ -2,7 +2,7 @@
  * @Version: 
  * @Author: LiYangfan.justin
  * @Date: 2022-09-01 17:08:39
- * @LastEditTime: 2022-10-08 14:11:10
+ * @LastEditTime: 2022-10-09 22:20:26
  * @Description: 
  * Copyright (c) 2022 by Liyangfan.justin, All Rights Reserved. 
  */
@@ -24,7 +24,6 @@ Epoll::~Epoll(){
     //std::cout<<"epoller deconstruct"<<std::endl;
 }
 
-/* channel用哪种智能指针? */
 void Epoll::EpollAdd(SharedChannel channel, int timeout){
     int fd = channel->Getfd();
     struct epoll_event event;
@@ -39,7 +38,7 @@ void Epoll::EpollAdd(SharedChannel channel, int timeout){
     if(timeout > 0){
         add_timer(channel, timeout);
     }
-    /* how ?不加move报错 */
+
     fd2channel_.insert(std::pair<int,SharedChannel>(fd,channel));
     fd2http_.insert(std::pair<int,std::shared_ptr<Http>>(fd,channel->GetHolder()));
     //LOG_TRACE("fd2channel_ isnerrt,fd:%d",fd);
@@ -99,13 +98,13 @@ std::vector<SharedChannel> Epoll::EpollWait(){
         for(int i=0;i<fd_count;i++){
             int fd = returned_fd_events_[i].data.fd;
             // std::cout<<"fd "<<i<<":"<<fd<<std::endl;
-            /* how ?需要加move */
+
             SharedChannel channel = (fd2channel_[fd]);
             if(channel == nullptr){
-                std::string channelFds = "";
-                for(auto& t:fd2channel_){
-                    channelFds += std::to_string(t.first);
-                }
+                //std::string channelFds = "";
+                // for(auto& t:fd2channel_){
+                //     channelFds += std::to_string(t.first);
+                // }
                 //LOG_TRACE("channel nullptr:%s,map:%d\n",channelFds,fd);
                 continue;
             }
